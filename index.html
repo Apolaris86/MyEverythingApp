@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2F5BEA">
+<meta name="theme-color" content="#24476E">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon.svg">
@@ -12,39 +12,46 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: sidebar nav on desktop, bottom tab bar on phones; each section is one scrolling column of cards. */
 :root{
-  --bg:#F2F4F8; --surface:#FFFFFF; --surface-2:#E8ECF3; --ink:#131925; --muted:#5A6476; --line:#DCE1EA;
-  --accent:#2F5BEA; --accent-ink:#FFFFFF; --accent-soft:#E3E9FD;
-  --swim:#0B8F9C; --bike:#C9731E; --run:#D9472F; --str:#6550C8; --rest:#8A93A3;
-  --good:#1F8A4C; --bad:#C2372B;
-  --base:#9DB4F5; --build:#5D82EE; --peak:#2F5BEA; --taper:#1E3A99;
-  --f-head:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
-  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --r:12px; --nav-w:224px; --tab-h:64px;
+  --bg:#F3F4F6; --surface:#FFFFFF; --surface-2:#E9ECF0; --ink:#121B28; --muted:#5B6575; --line:#DADFE6;
+  --accent:#24476E; --accent-ink:#FFFFFF; --accent-soft:#E2EAF3;
+  --str:#3B7A51; --bike:#C8701C; --run:#C0403A; --swim:#1F6DAF; --rest:#8A93A3; --on-sport:#FFFFFF;
+  --str-t:#E7F0E9; --bike-t:#FBEEDF; --run-t:#F8E4E3; --swim-t:#E0EBF5;
+  --good:#2E7D4F; --bad:#B8362E;
+  --ph1:#A9B8C8; --ph2:#6E89A8; --ph3:#2F4A68; --ph4:#121C2A;
+  --ph-fg1:#121B28; --ph-fg2:#FFFFFF; --ph-fg3:#FFFFFF; --ph-fg4:#FFFFFF;
+  --f-head:"Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:10px; --nav-w:224px; --tab-h:64px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0D1118; --surface:#161C27; --surface-2:#1F2735; --ink:#E7EBF2; --muted:#98A2B4; --line:#283142;
-  --accent:#7B96FF; --accent-ink:#0D1118; --accent-soft:#222E52;
-  --swim:#3CC3CF; --bike:#EBA05A; --run:#F2785F; --str:#9C8BF0; --rest:#7D8698;
-  --good:#4CC27E; --bad:#F06A5E;
-  --base:#33437A; --build:#4C66C2; --peak:#7B96FF; --taper:#B4C4FF; color-scheme:dark}}
+  --bg:#0E1319; --surface:#161D27; --surface-2:#202936; --ink:#E6EAF0; --muted:#97A1B1; --line:#2A3443;
+  --accent:#8FB0D8; --accent-ink:#0E1319; --accent-soft:#1E2C3E;
+  --str:#6DBB88; --bike:#EE9C4E; --run:#EE766C; --swim:#5EA6E6; --rest:#7D8698; --on-sport:#0E1319;
+  --str-t:#18261D; --bike-t:#2B2116; --run-t:#2C1B1B; --swim-t:#14233A;
+  --good:#5CC285; --bad:#EE6A60;
+  --ph1:#3B4A5C; --ph2:#5A7596; --ph3:#8DA7C6; --ph4:#D4DDE8;
+  --ph-fg1:#E6EAF0; --ph-fg2:#FFFFFF; --ph-fg3:#0E1319; --ph-fg4:#0E1319; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0D1118; --surface:#161C27; --surface-2:#1F2735; --ink:#E7EBF2; --muted:#98A2B4; --line:#283142;
-  --accent:#7B96FF; --accent-ink:#0D1118; --accent-soft:#222E52;
-  --swim:#3CC3CF; --bike:#EBA05A; --run:#F2785F; --str:#9C8BF0; --rest:#7D8698;
-  --good:#4CC27E; --bad:#F06A5E;
-  --base:#33437A; --build:#4C66C2; --peak:#7B96FF; --taper:#B4C4FF; color-scheme:dark}
+  --bg:#0E1319; --surface:#161D27; --surface-2:#202936; --ink:#E6EAF0; --muted:#97A1B1; --line:#2A3443;
+  --accent:#8FB0D8; --accent-ink:#0E1319; --accent-soft:#1E2C3E;
+  --str:#6DBB88; --bike:#EE9C4E; --run:#EE766C; --swim:#5EA6E6; --rest:#7D8698; --on-sport:#0E1319;
+  --str-t:#18261D; --bike-t:#2B2116; --run-t:#2C1B1B; --swim-t:#14233A;
+  --good:#5CC285; --bad:#EE6A60;
+  --ph1:#3B4A5C; --ph2:#5A7596; --ph3:#8DA7C6; --ph4:#D4DDE8;
+  --ph-fg1:#E6EAF0; --ph-fg2:#FFFFFF; --ph-fg3:#0E1319; --ph-fg4:#0E1319; color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
 h1,h2,h3{font-family:var(--f-head);margin:0;text-wrap:balance;letter-spacing:-.01em}
-h1{font-size:1.75rem;line-height:1.15}
-h2{font-size:1.15rem}
-h3{font-size:1rem}
+h1{font-size:2.1rem;line-height:1.05;text-transform:uppercase;letter-spacing:.005em}
+h2{font-size:1.3rem}
+h3{font-size:1.1rem}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -55,8 +62,8 @@ button{cursor:pointer}
 /* Shell */
 .app{display:grid;grid-template-columns:var(--nav-w) minmax(0,1fr);min-height:100%}
 .nav{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;padding:20px 12px;border-right:1px solid var(--line);background:var(--surface)}
-.brand{display:flex;align-items:center;gap:10px;padding:4px 10px 18px;font-family:var(--f-head);font-weight:700;font-size:1.05rem}
-.brand-mark{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-size:.8rem}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 10px 18px;font-family:var(--f-head);font-weight:700;font-size:1.3rem;text-transform:uppercase}
+.brand-mark{width:28px;height:28px;border-radius:4px;font-size:.95rem!important;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-size:.8rem}
 .nav a,.nav .navbtn{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:500;border:0;background:none;width:100%;text-align:left}
 .nav a:hover,.nav .navbtn:hover{background:var(--surface-2);color:var(--ink)}
 .nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
@@ -75,7 +82,7 @@ main{min-width:0;padding-block:28px 48px;padding-left:max(16px, env(safe-area-in
   .brand,.nav .spacer{display:none}
   .nav a,.nav .navbtn{flex-direction:column;gap:2px;font-size:.7rem;padding:6px 4px;justify-content:center;align-items:center;text-align:center;width:auto;flex:1}
   main{padding-block:20px calc(var(--tab-h) + 32px + env(safe-area-inset-bottom, 0px))}
-  h1{font-size:1.45rem}
+  h1{font-size:1.7rem}
 }
 
 /* Cards & controls */
@@ -108,50 +115,124 @@ input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px;bor
 .check[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:#fff}
 .check[aria-pressed="true"] svg{opacity:1}
 
-/* Sport chips */
-.sport{--c:var(--rest);display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--c)}
-.sport::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
-.s-swim{--c:var(--swim)} .s-bike{--c:var(--bike)} .s-run{--c:var(--run)} .s-strength{--c:var(--str)} .s-brick{--c:var(--bike)} .s-race{--c:var(--accent)} .s-rest{--c:var(--rest)}
-.s-brick::before{background:linear-gradient(90deg,var(--bike) 50%,var(--run) 50%)}
+/* Sport colours follow the printed plan: strength green, bike orange, run red, swim blue, Sunday orange-to-red. */
+.sport{--c:var(--rest);display:inline-flex;align-items:center;gap:6px;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--c)}
+.sport::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--c)}
+.s-swim,.sp-swim{--c:var(--swim);--tint:var(--swim-t)} .s-bike,.sp-bike{--c:var(--bike);--tint:var(--bike-t)} .s-run,.sp-run{--c:var(--run);--tint:var(--run-t)}
+.s-strength,.sp-strength{--c:var(--str);--tint:var(--str-t)} .s-brick,.sp-brick{--c:var(--bike);--tint:var(--bike-t)} .s-race,.sp-race{--c:var(--ink);--tint:var(--surface-2)} .s-rest,.sp-rest{--c:var(--rest);--tint:var(--surface-2)}
+.s-brick::before{background:linear-gradient(135deg,var(--bike) 50%,var(--run) 50%)}
+.mono{font-family:var(--f-mono)}
 
 /* Today */
-.hero-session{display:grid;gap:12px}
-.hero-session .big{font-family:var(--f-head);font-size:1.5rem;font-weight:600;line-height:1.2}
+.hero-session{display:grid;gap:10px;border-top:5px solid var(--c)}
+.sp-brick.hero-session{border-image:linear-gradient(90deg,var(--bike),var(--run)) 1;border-image-slice:1;border-top-width:5px}
+.hero-session .big{font-family:var(--f-head);font-size:1.7rem;font-weight:700;line-height:1.1}
 .stat{display:flex;flex-direction:column;gap:2px}
-.stat .v{font-family:var(--f-head);font-size:1.5rem;font-weight:600}
+.stat .v{font-family:var(--f-head);font-size:1.7rem;font-weight:700}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .mini-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .mini-list li{display:flex;gap:10px;align-items:center;min-width:0}
 .mini-list li span.t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.test-badge{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;border:1.5px solid var(--ink);border-radius:3px;padding:2px 8px;font-size:.78rem;font-weight:600;background:var(--surface)}
+.test-badge b{font-family:var(--f-head);text-transform:uppercase;letter-spacing:.04em;font-size:.85rem}
 
-/* Training */
-.phase-strip{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:3px}
-.phase-strip button{height:34px;border:0;border-radius:5px;padding:0;font-size:.68rem;font-weight:600;color:var(--ink);background:var(--c);position:relative}
-.phase-strip button[data-phase="Base"]{--c:var(--base)} .phase-strip button[data-phase="Build"]{--c:var(--build);color:#fff}
-.phase-strip button[data-phase="Peak"]{--c:var(--peak);color:#fff} .phase-strip button[data-phase="Taper"]{--c:var(--taper);color:#fff}
-:root[data-theme="dark"] .phase-strip button{color:var(--ink)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .phase-strip button[data-phase="Peak"],:root:not([data-theme="light"]) .phase-strip button[data-phase="Taper"]{color:#0D1118}}
-:root[data-theme="dark"] .phase-strip button[data-phase="Peak"],:root[data-theme="dark"] .phase-strip button[data-phase="Taper"]{color:#0D1118}
-.phase-strip button[aria-current="true"]{outline:2px solid var(--ink);outline-offset:2px}
-.phase-strip button.now::after{content:"";position:absolute;left:50%;bottom:-8px;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:var(--ink)}
-.phase-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.78rem;color:var(--muted);margin-top:14px}
-.phase-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-.split{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--surface-2)}
-.split span{display:block;height:100%}
-.split-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--muted)}
+/* Training: 26 weeks at a glance */
+.page.wide{max-width:1180px}
+.glance{display:grid;grid-template-columns:repeat(26,minmax(0,1fr));gap:3px;align-items:end;height:64px;margin-top:14px}
+.glance button{position:relative;height:100%;border:0;border-radius:1px;padding:0 0 4px;display:flex;align-items:flex-end;justify-content:center;font:500 .66rem var(--f-mono);background:var(--c);color:var(--fg);min-width:0}
+.glance button.light{height:44%}
+.glance [data-ph="1"],.glance-labels [data-ph="1"]{--c:var(--ph1);--fg:var(--ph-fg1)}
+.glance [data-ph="2"],.glance-labels [data-ph="2"]{--c:var(--ph2);--fg:var(--ph-fg2)}
+.glance [data-ph="3"],.glance-labels [data-ph="3"]{--c:var(--ph3);--fg:var(--ph-fg3)}
+.glance [data-ph="4"],.glance-labels [data-ph="4"]{--c:var(--ph4);--fg:var(--ph-fg4)}
+.glance button[aria-current="true"]{outline:2px solid var(--ink);outline-offset:2px;z-index:1}
+.glance button.now::after{content:"";position:absolute;top:-9px;left:50%;margin-left:-3px;width:6px;height:6px;border-radius:50%;background:var(--good)}
+.glance-labels{display:grid;grid-template-columns:repeat(26,minmax(0,1fr));gap:3px;margin-top:10px}
+.glance-labels div{border-top:3px solid var(--c);padding-top:6px;min-width:0}
+.glance-labels b{display:block;font:700 .95rem/1.1 var(--f-head);text-transform:uppercase;letter-spacing:.02em}
+.glance-labels small{font:400 .7rem var(--f-mono);color:var(--muted)}
+.glance-key{display:flex;flex-wrap:wrap;gap:14px;font-size:.78rem;color:var(--muted);margin-top:12px}
+.glance-key .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--good);margin-right:6px;vertical-align:1px}
+@media (max-width:640px){.glance{height:48px;gap:2px}.glance button{font-size:0;padding:0}.glance-labels{gap:2px}.glance-labels b{font-size:.75rem}.glance-labels small{display:none}}
+
+/* Training: week view */
+.week-head{display:flex;flex-direction:column;gap:12px}
+.week-title{display:flex;align-items:center;gap:6px}
+.week-title h2{font-size:1.5rem}
+.vol{display:flex;flex-wrap:wrap;gap:8px}
+.vol .pill{font-size:.78rem}
+.note{font-size:.88rem;color:var(--muted)}
 .days{display:flex;flex-direction:column;gap:10px}
-.day{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;align-items:start;padding:14px 16px}
-.day.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.day.is-done{opacity:.72}
-.day .when{display:flex;flex-direction:column;line-height:1.2}
-.day .when b{font-family:var(--f-head);font-size:1.05rem}
-.day .when small{color:var(--muted);font-size:.78rem}
-.day .body{display:flex;flex-direction:column;gap:4px;min-width:0}
-.day .title{font-weight:600}
-.day ul{margin:4px 0 0;padding-left:18px;color:var(--muted);font-size:.88rem}
-.day .dur{font-size:.85rem;color:var(--muted)}
-details.more summary{cursor:pointer;color:var(--accent);font-size:.85rem;list-style:none}
+.dcard{display:grid;grid-template-columns:150px minmax(0,1fr) auto;border-radius:var(--r);overflow:hidden;background:var(--tint);border:1px solid var(--line)}
+.dcard.sp-brick{background:linear-gradient(90deg,var(--bike-t),var(--run-t))}
+.dcard .dh{background:var(--c);color:var(--on-sport);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.dcard.sp-brick .dh{background:linear-gradient(135deg,var(--bike),var(--run))}
+.dcard.sp-race .dh{background:var(--ink);color:var(--bg)}
+.dh b{font:700 1.35rem/1 var(--f-head);text-transform:uppercase;letter-spacing:.02em}
+.dh small{font-size:.8rem;opacity:.95}
+.dh .date{font:500 .72rem var(--f-mono);opacity:.9;margin-top:4px}
+.dcard .db{padding:12px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.dcard .db .title{font-weight:600;font-size:1rem}
+.dcard .db .sub{font-size:.82rem;color:var(--muted)}
+.dcard .db ul{margin:6px 0 0;padding-left:18px;font-size:.86rem;color:var(--muted)}
+.dcard .db ul li+li{margin-top:2px}
+.dcard .chk{padding:12px 14px}
+.dcard.is-today{outline:2px solid var(--accent);outline-offset:2px}
+.dcard.is-light .db .title{color:var(--muted);font-weight:500}
+.dcard.is-done .db{opacity:.6}
+.today-tag{display:inline-block;margin-top:6px;font:700 .72rem var(--f-mono);text-transform:uppercase;background:var(--surface);color:var(--ink);padding:1px 6px;border-radius:3px;align-self:flex-start}
+details.more summary{cursor:pointer;color:var(--accent);font-size:.84rem;list-style:none;font-weight:500}
 details.more summary::-webkit-details-marker{display:none}
+@media (max-width:640px){
+  .dcard{grid-template-columns:minmax(0,1fr) auto}
+  .dcard .dh{grid-column:1/-1;flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 10px;padding:9px 14px}
+  .dh .date{margin:0 0 0 auto}
+  .today-tag{margin:0}
+}
+
+/* Training: full plan table (mirrors the printed plan) */
+.plan-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.plan-table{border-collapse:separate;border-spacing:0;min-width:1120px;width:100%;font-size:.82rem;line-height:1.35}
+.plan-table th{text-align:left;padding:8px 10px;vertical-align:bottom;font-weight:500}
+.plan-table th.meta{font:500 .68rem var(--f-mono);color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--ink)}
+.plan-table th.sh{background:var(--c);color:var(--on-sport);width:12%}
+.plan-table th.sp-brick{background:linear-gradient(135deg,var(--bike),var(--run))}
+.plan-table th.sh b{display:block;font:700 1.15rem/1.05 var(--f-head);text-transform:uppercase}
+.plan-table th.sh span{font-size:.72rem;opacity:.95}
+.plan-table td{padding:9px 10px;vertical-align:top;border-bottom:1px solid var(--line)}
+.plan-table td.c{background:var(--tint)}
+.plan-table td.sp-brick{background:linear-gradient(90deg,var(--bike-t),var(--run-t))}
+.plan-table tr.light td.c{color:var(--muted)}
+.plan-table td.test{box-shadow:inset 0 0 0 1.5px var(--ink);font-weight:600;color:var(--ink)}
+.plan-table td.race{background:var(--ink);color:var(--bg);font:700 1.25rem/1.1 var(--f-head);text-transform:uppercase;vertical-align:middle}
+.plan-table td.wk{white-space:nowrap}
+.plan-table td.wk button{border:0;background:none;padding:0 6px;border-radius:3px;font:700 1.45rem/1.1 var(--f-head);color:var(--ink)}
+.plan-table td.wk button:hover{background:var(--surface-2)}
+.plan-table tr.now td.wk button{background:var(--ink);color:var(--bg)}
+.plan-table td.wk .arrow{font:700 1rem var(--f-head);color:var(--muted)}
+.plan-table td.starts{font:400 .72rem var(--f-mono);color:var(--muted);white-space:nowrap}
+.plan-table td.notes{font-size:.76rem;color:var(--muted);width:11%}
+.plan-table .core{display:block;font-size:.72rem;color:var(--muted);margin-top:2px}
+.plan-table .tick{color:var(--good);font-weight:700;margin-left:4px}
+.plan-key{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.76rem;color:var(--muted);padding:10px 2px 0}
+.plan-key i{display:inline-block;width:10px;height:10px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.plan-key .box{display:inline-block;width:12px;height:10px;border:1.5px solid var(--ink);margin-right:5px;vertical-align:-1px}
+
+/* Training: guide */
+.guide{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:start}
+.guide .card{display:flex;flex-direction:column;gap:10px;min-width:0}
+.guide h2{font-size:1.25rem;text-transform:uppercase;letter-spacing:.02em}
+.gtable{width:100%;border-collapse:collapse;font-size:.86rem}
+.gtable th{font:500 .66rem var(--f-mono);text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 6px;border-bottom:1px solid var(--line)}
+.gtable td{padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.gtable tr:last-child td{border-bottom:0}
+.gtable tr.total td{font-weight:600;border-top:1.5px solid var(--ink)}
+.guide ul{margin:0;padding-left:18px;font-size:.88rem;display:flex;flex-direction:column;gap:5px}
+.pill.next{background:var(--accent-soft);color:var(--accent)}
+.pill.past{background:transparent;border:1px solid var(--line)}
+.gear{list-style:none;padding:0!important}
+.gear li{display:flex;gap:10px;align-items:flex-start}
+.gear li.done span{text-decoration:line-through;color:var(--muted)}
 
 /* Todo */
 .todo-form{display:grid;grid-template-columns:minmax(0,1fr) 150px auto;gap:8px}
@@ -229,11 +310,6 @@ const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","
 const MON_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 function dowIndex(iso){ return (new Date(toUTC(iso)).getUTCDay() + 6) % 7; }
 function shortDate(iso){ const [,m,d] = iso.split("-").map(Number); return d+" "+MON[m-1]; }
-function defaultRaceDate(){
-  // Sunday ~15 weeks out, so a fresh install lands in week 2 of the plan.
-  const t = todayISO(); const sunday = addDays(t, 6 - dowIndex(t));
-  return addDays(sunday, 14*7);
-}
 
 /* ---------- state ---------- */
 const state = {
@@ -241,9 +317,16 @@ const state = {
   training: store.get("training", { done:{} }),
   todos: store.get("todos", null),
   tx: store.get("tx", null),
-  ui: { todoList:"personal", week:null, month:null, txType:"expense" }
+  ui: { todoList:"personal", week:null, month:null, txType:"expense", tview:"week" }
 };
-if(!state.settings){ state.settings = { raceDate: defaultRaceDate(), raceName:"Ironman 70.3", currency:"EUR" }; store.set("settings", state.settings); }
+if(!state.settings){ state.settings = { raceDate:"2027-05-02", raceName:"Ironman 70.3", currency:"EUR", planVersion:2 }; store.set("settings", state.settings); }
+if(state.settings.planVersion !== 2){
+  // v1 used a 16-week sample plan; switch to the real 26-week plan and clear old ticks.
+  Object.assign(state.settings, {raceDate:"2027-05-02", raceName:"Ironman 70.3", planVersion:2});
+  state.training = {done:{}, gear:{}};
+  store.set("settings", state.settings); store.set("training", state.training);
+}
+if(!state.training.gear) state.training.gear = {};
 if(!state.todos){ state.todos = sampleTodos(); store.set("todos", state.todos); }
 if(!state.tx){ state.tx = sampleTx(); store.set("tx", state.tx); }
 const save = k => store.set(k, state[k]);
@@ -277,82 +360,144 @@ function sampleTx(){
   ];
 }
 
-/* ---------- Ironman 70.3 sample plan (16 weeks). Replace PLAN builder with your own MD plan later. ---------- */
-const WEEKS = 16;
-const RECOVERY = [4, 8, 12];
-const LONG_RUN = [60,65,70,50, 75,80,85,60,90,95, 100,70,105,110, 75,20];
-const BRICK_BIKE = [120,135,150,90, 150,165,180,120,195,210, 210,150,225,240, 150,0];
-const BRICK_RUN  = [15,15,20,10, 20,25,25,15,30,30, 35,20,40,40, 20,0];
-const phaseOf = w => w<=4 ? "Base" : w<=10 ? "Build" : w<=14 ? "Peak" : "Taper";
+/* ---------- Ironman 70.3 plan: 26 weeks, Mon 2 Nov 2026 to race day Sun 2 May 2027 (from the PDF plan) ---------- */
+const WEEKS = 26;
+const LIGHT = [5, 9, 13, 17, 21];
+const PHASES = [
+  {n:1, name:"Recovery and base", from:1, to:9},
+  {n:2, name:"Build", from:10, to:17},
+  {n:3, name:"Specific and peak", from:18, to:24},
+  {n:4, name:"Taper and race", from:25, to:26}
+];
+const phaseInfo = w => PHASES.find(p => w>=p.from && w<=p.to);
+const phaseOf = w => phaseInfo(w).name;
+const GOAL = "5:29:30";
+
+// [tue ride, tue min, wed run, wed km, fri swim, swim m, sat km, sun text (null = "ride km → run km"), sun ride km, sun run km, note]
+const WK = [null,
+  ["45 min easy",45,"5 km easy",5,"1,000 m easy",1000,5,"40 km easy, no run",40,0,"Recovery week after Huskisson"],
+  ["60 min Z2",60,"6 km easy, 4 strides",6,"1,500 m drills, 4×200",1500,8,null,50,3,""],
+  ["60 min Z2",60,"7 km, 3×5 min tempo",7,"1,800 m",1800,10,null,55,4,""],
+  ["70 min Z2",70,"8 km, 20 min tempo",8,"2,000 m, 400 m + 200 m time trial",2000,12,null,60,5,"Swim test on Friday"],
+  ["50 min easy",50,"6 km easy",6,"1,500 m",1500,8,null,45,3,"Lighter week"],
+  ["75 min, 3×8 min tempo",75,"8 km, 5×3 min 10k effort",8,"2,000 m",2000,12,null,65,5,"Optional 2nd swim starts"],
+  ["80 min, 3×10 min tempo",80,"9 km, 25 min tempo",9,"2,200 m",2200,13,null,70,6,""],
+  ["85 min, 4×8 min tempo",85,"9 km, 6×3 min 10k effort",9,"2,400 m",2400,14,null,75,6,"Christmas week, move sessions around family"],
+  ["60 min easy",60,"6 km easy",6,"1,800 m",1800,10,null,50,4,"Lighter week, New Year"],
+  ["90 min, 3×10 min tempo",90,"10 km, 2×15 min tempo",10,"2,500 m",2500,14,null,80,6,"Start fuelling tests on Sundays"],
+  ["90 min, 4×8 min tempo",90,"10 km, 6×4 min 10k effort",10,"2,600 m",2600,15,null,85,8,""],
+  ["100 min, 3×12 min tempo",100,"11 km, 30 min tempo",11,"2,800 m",2800,16,null,90,8,""],
+  ["60 min easy",60,"7 km easy",7,"2,000 m, 400 m + 200 m time trial",2000,11,null,60,5,"Lighter week. Swim test on Friday. Order wetsuit by 31 Jan"],
+  ["100 min, 3×15 min tempo",100,"11 km, 2×15 min race pace",11,"2,800 m",2800,16,null,90,8,""],
+  ["105 min, 4×10 min tempo",105,"12 km, 5×5 min hard",12,"3,000 m",3000,17,null,95,10,""],
+  ["110 min, 2×20 min tempo",110,"12 km, 35 min tempo",12,"3,000 m",3000,18,null,100,10,"Ride test on Sunday. Running shoes broken in"],
+  ["70 min easy",70,"8 km easy, strides",8,"2,200 m",2200,12,null,65,6,"Lighter week"],
+  ["110 min, 3×15 min tempo",110,"12 km, 3×12 min race pace",12,"3,000 m in wetsuit",3000,18,null,100,10,"Wetsuit swims start"],
+  ["115 min, 4×12 min tempo",115,"12 km, 6×5 min hard",12,"3,200 m with 1,900 m continuous at 2:00 /100 m",3200,19,null,105,10,"Swim test on Friday"],
+  ["120 min, 2×25 min tempo",120,"13 km, 40 min race pace",13,"3,200 m",3200,20,null,105,12,"Ride and run test on Sunday"],
+  ["75 min easy",75,"8 km easy",8,"2,200 m, 400 m + 200 m time trial",2200,12,null,70,6,"Lighter week. Swim test on Friday. Bike service"],
+  ["120 min, 3×15 min race effort",120,"12 km, 2×20 min race pace",12,"3,200 m open water in wetsuit",3200,20,"100 km, last 60 km at race effort → 10 km at race pace",100,10,"Peak block starts"],
+  ["120 min, 3×15 min race effort",120,"10 km, 4×6 min race pace",10,"3,000 m",3000,18,"105 km → 8 km at race pace",105,8,"Peak block"],
+  ["105 min, 2×15 min race effort",105,"8 km, 3×8 min race pace",8,"2,500 m",2500,14,null,85,8,"Peak block ends"],
+  ["75 min, 3×8 min race effort",75,"7 km, 3×5 min race pace, strides",7,"2,000 m",2000,10,null,55,5,"Taper, volume down about 40%"],
+  ["45 min easy, 3×3 min race effort",45,"5 km easy, 4 strides",5,"1,000 m easy, 4×50 m fast",1000,0,null,0,0,"Race week, volume down about 60%"]
+];
+
+const TESTS = [
+  {w:4,  d:4, test:"Swim 400 m then 200 m, all out", pass:"Record both. Sets your 100 m pace"},
+  {w:13, d:4, test:"Swim 400 m then 200 m again", pass:"100 m pace at or under 1:55"},
+  {w:16, d:6, test:"100 km ride, then 10 km run", pass:"Ride at 28.5 km/h or faster"},
+  {w:19, d:4, test:"1,900 m continuous swim", pass:"38:00 at 2:00 /100 m, or within 1 min"},
+  {w:20, d:6, test:"105 km ride, then 12 km run", pass:"Run at 5:15 /km or faster"},
+  {w:21, d:4, test:"Swim 400 m then 200 m, final check", pass:"100 m pace at or under 1:50"}
+];
+
+const GEAR = [
+  {id:"wetsuit", text:"Wetsuit (2XU or Orca, tall) ordered by 31 Jan and swum in by week 18"},
+  {id:"shoes", text:"New running shoes broken in by week 16"},
+  {id:"trisuit", text:"Trisuit (2XU Aero Hex Sleeved) worn on at least two long sessions before race day"},
+  {id:"service", text:"Bike service in the week of 22 Mar"}
+];
+
+const UPPER_EX = ["Dumbbell pullover 3×8","Single-arm dumbbell row 3×10 each arm","Shoulder press 3×10","Dumbbell bench press 3×10","Dead bug 3×10","Plank 3×40 s"];
+const LEGS_EX = ["Goblet squat 3×8","Dumbbell Romanian deadlift 3×8","Split squat 3×8 each leg","Calf raise 3×12","Side plank 3×40 s each side","Glute bridge 3×12"];
+const CORE_CIRCUIT = "Core circuit, 2 rounds: dead bug 8 each side, plank 30 s, side plank 30 s each side, glute bridge 12";
+const DAY_KIND = ["Strength, upper","Indoor ride","Run","Strength, legs","Swim","Long run","Long ride / brick"];
+
+function strengthTitle(w, upper){
+  if(w===1) return "Mobility only";
+  if(w===25) return upper ? "Upper mobility + core, 15 to 20 min" : "Mobility + core, 15 to 20 min";
+  if(w===26) return upper ? "Upper mobility + core, 15 min" : "Mobility + core, 15 min. Check bike, kit and race bag";
+  const len = w<=9 ? "40 min" : w<=17 ? "35 min" : "25 to 30 min";
+  return (upper ? "Upper" : "Legs") + " + core, " + len;
+}
+function strengthDetail(w, upper){
+  const ex = upper ? UPPER_EX : LEGS_EX, light = LIGHT.includes(w);
+  if(w===1) return ["Recovery week after Huskisson: easy mobility, no lifting"];
+  if(w>=25) return ["Mobility and core only","No new exercises in the last three weeks"];
+  const head = w<=9 ? (light ? ["Lighter week: two sets of each"] : [])
+             : w<=17 ? ["Same lifts, heavier, 6 to 8 reps" + (light ? ". Two sets this week" : "")]
+             : ["Two sets, hold the weights"];
+  const knees = upper ? [] : ["Keep the knees tracking over the toes on squats and split squats"];
+  return head.concat(ex, knees, ["Dumbbells and a bench. Mon and Thu can swap"]);
+}
+function rideHints(t){
+  const h = ["Indoors on the KICKR"];
+  if(/race effort/.test(t)) h.push("Race effort: steady, the effort that holds 30 km/h on the flat");
+  if(/tempo/.test(t)) h.push("Tempo blocks: comfortably hard, controlled breathing");
+  if(/Z2|easy/.test(t)) h.push("Z2 / easy: you could talk in full sentences");
+  return h;
+}
+function runHints(t){
+  const h = [];
+  if(/easy/.test(t)) h.push("Easy: 5:50 to 6:20 /km, full sentences");
+  if(/tempo/.test(t)) h.push("Tempo: 4:50 to 4:55 /km");
+  if(/10k effort|hard/.test(t)) h.push("10k effort: 4:40 to 4:45 /km");
+  if(/race pace/.test(t)) h.push("Race pace: 5:00 /km");
+  if(/strides/.test(t)) h.push("Strides: about 20 s smooth and fast, walk back");
+  if(!/^\d+ km easy/.test(t)) h.push("Run the rest of the distance easy around the quality block");
+  return h;
+}
+function swimHints(w, t){
+  const h = ["Main swim of the week. Race pace is 2:00 /100 m"];
+  if(/time trial/.test(t)) h.push("Warm up, then swim 400 m and 200 m all out. Record both times");
+  if(/1,900 m continuous/.test(t)) h.push("Race-distance swim: aim for 38:00");
+  if(/wetsuit|open water/.test(t)) h.push("Wetsuit swim, open water if you can");
+  if(w>=6 && w<=24) h.push("Optional second easy swim (1.5 to 2 km, technique) on Mon or Wed");
+  if(w>=6 && w<=24) h.push("Open water at Balmoral every second Friday");
+  return h;
+}
+function sundayHints(w, r){
+  const h = ["Outdoors on the race bike" + (w>=18 ? ", in the race position" : "")];
+  if(r[9]) h.push("Straight off the bike into the " + r[9] + " km run");
+  if(w>=10) h.push("Fuelling test: 60 to 80 g carbs and 500 to 750 ml fluid per hour. Bulk Nutrients mix, INFINIT as backup");
+  if(r[9]) h.push("Skip the run and ride only if a knee niggle shows up");
+  h.push("Never drop the long ride two weeks in a row");
+  return h;
+}
 
 function weekPlan(w){
-  const p = phaseOf(w), rec = RECOVERY.includes(w), race = w === WEEKS;
-  const S = (sport, title, min, detail, extra) => Object.assign({sport, title, min, detail}, extra||{});
-
-  // Mon — Strength A
-  let mon;
-  if(race) mon = S("strength","Mobility & activation",20,["Hip openers, band walks, glute bridges","No load this week"]);
-  else if(p==="Taper") mon = S("strength","Strength A — maintenance",30,["Goblet squat 2×8 (moderate)","Single-leg RDL 2×8 / leg","Dead bug 2×10"]);
-  else if(rec) mon = S("strength","Strength A — light",30,["2 sets of everything at 70% load","Extra mobility for hips and ankles"]);
-  else if(p==="Base") mon = S("strength","Strength A — lower body & core",45,["Goblet squat 3×10","Romanian deadlift 3×10","Step-ups 3×8 / leg","Plank 3×45″, side plank 3×30″"]);
-  else mon = S("strength","Strength A — lower body & core",45,["Back squat "+(p==="Peak"?"3×5":"4×6"),"Single-leg RDL 3×8 / leg","Bulgarian split squat 3×8 / leg","Pallof press 3×10, dead bug 3×10"]);
-
-  // Tue — Bike
-  let tue;
-  if(race) tue = S("bike","Bike openers",40,["15′ easy","4×2′ at race power, 2′ easy","Easy spin to finish"]);
-  else if(p==="Taper") tue = S("bike","Race-power reminders",60,["15′ warm-up","3×8′ at 80–85% FTP, 4′ easy","Cool-down"]);
-  else if(rec) tue = S("bike","Easy spin",45,["Zone 1–2, high cadence (90+ rpm)"]);
-  else if(p==="Base") tue = S("bike","Endurance + cadence",60,["10′ warm-up","40′ Zone 2 with 6×30″ high-cadence spin-ups","10′ cool-down"]);
-  else if(p==="Build") tue = S("bike","Sweet spot intervals",75,["15′ warm-up","3×12′ at 88–93% FTP, 4′ easy","Cool-down"]);
-  else tue = S("bike","Race-pace intervals",90,["15′ warm-up","3×20′ at 80–85% FTP (70.3 power), 5′ easy","10′ cool-down"]);
-
-  // Wed — Run
-  let wed;
-  if(race) wed = S("run","Easy run + strides",30,["20′ easy","4×20″ strides"]);
-  else if(p==="Taper") wed = S("run","Race-pace sharpener",40,["15′ easy","4×3′ at 70.3 race pace, 2′ jog","Easy to finish"]);
-  else if(rec) wed = S("run","Easy run",35,["Zone 2, flat route"]);
-  else if(p==="Base") wed = S("run","Easy aerobic",45,["35′ Zone 2","6×20″ strides"]);
-  else if(p==="Build") wed = S("run","Threshold",55,["15′ easy","5×4′ at threshold, 2′ jog","10′ easy"]);
-  else wed = S("run","Race-pace run",60,["15′ easy","2×15′ at 70.3 race pace, 3′ jog","10′ easy"]);
-
-  // Thu — Strength B
-  let thu;
-  if(race) thu = S("rest","Rest / travel",0,["Pack, check bike, sleep well"]);
-  else if(p==="Taper") thu = S("strength","Strength B — maintenance",30,["Pull-ups 2×6","Hip thrust 2×8","Face pulls 2×15"]);
-  else if(rec) thu = S("strength","Strength B — light",30,["2 sets at 70% load","Thoracic mobility"]);
-  else thu = S("strength","Strength B — upper body & posterior chain",45,["Pull-ups or lat pulldown 3×8","Push-ups 3×12","Hip thrust 3×10","Face pulls 3×15","Copenhagen plank 3×20″ / side"]);
-
-  // Fri — Swim
-  let fri;
-  const swim = (m, title, detail) => S("swim", title, Math.round(m/45), detail, {dist:m});
-  if(race) fri = swim(1200,"Short & sharp",["300 easy","6×50 at race pace, 20″ rest","Practise sighting","300 easy"]);
-  else if(p==="Taper") fri = swim(2000,"Race-pace swim",["400 warm-up","4×300 at race pace, 30″ rest","400 easy"]);
-  else if(rec) fri = swim(1800,"Easy technique",["Mix of drills and easy aerobic swimming"]);
-  else if(p==="Base") fri = swim(2000,"Technique",["400 warm-up","8×50 drill (catch-up, fingertip drag)","6×100 aerobic, 20″ rest","400 pull buoy","200 easy"]);
-  else if(p==="Build") fri = swim(2600,"CSS intervals",["400 warm-up","4×50 build","8×200 at CSS pace, 20″ rest","400 easy"]);
-  else fri = swim(3000,"Race simulation",["400 warm-up","3×600 at race pace, 45″ rest","Sight every 6 strokes","400 easy","Open water if you can"]);
-
-  // Sat — Long run
-  let sat;
-  const lr = LONG_RUN[w-1];
-  if(race) sat = S("run","Pre-race shakeout",lr,["15′ easy with 4 strides","Bike check-in & transition setup"]);
-  else if(rec || p==="Taper") sat = S("run","Long run — easy",lr,["All Zone 2, conversational"]);
-  else if(p==="Base") sat = S("run","Long run",lr,["All Zone 2, conversational","Practise fuelling every 30′"]);
-  else if(p==="Build") sat = S("run","Long run",lr,["Zone 2","Last 15′ at 70.3 race pace","Fuel every 30′"]);
-  else sat = S("run","Long run",lr,["Zone 2","Last 25′ at 70.3 race pace","Rehearse race-day nutrition"]);
-
-  // Sun — Brick (or race)
-  let sun;
-  if(race) sun = S("race","RACE DAY — "+(state.settings.raceName||"Ironman 70.3"),330,["1.9 km swim","90 km bike","21.1 km run","Trust the training."]);
-  else {
-    const b = BRICK_BIKE[w-1], r = BRICK_RUN[w-1];
-    const ride = p==="Build" && !rec ? "Ride "+fmtMin(b)+" Zone 2 with 2×20′ at race power" :
-                 p==="Peak" && !rec ? "Ride "+fmtMin(b)+", second half at race power" :
-                 "Ride "+fmtMin(b)+" Zone 2";
-    sun = S("brick","Long ride + run (brick)",b+r,[ride,"Straight into a "+r+"′ run: settle 5′, then steady","Fuel 60–90 g carbs per hour on the bike"]);
-  }
-  return [mon,tue,wed,thu,fri,sat,sun];
+  const r = WK[w], light = LIGHT.includes(w);
+  const S = (d, sport, title, sub, detail) => ({sport, kind:DAY_KIND[d], title, sub:sub||"", detail, light, test:null});
+  const days = [
+    S(0, "strength", strengthTitle(w,true), "", strengthDetail(w,true)),
+    S(1, "bike", r[0], w<=25 ? "+ 10 min core circuit" : "", rideHints(r[0]).concat(w<=25 ? [CORE_CIRCUIT, "If the week goes wrong, shorten this ride first"] : [])),
+    S(2, "run", r[2], "", runHints(r[2])),
+    S(3, "strength", strengthTitle(w,false), "", strengthDetail(w,false)),
+    S(4, "swim", r[4], "", swimHints(w, r[4])),
+    w===WEEKS ? Object.assign(S(5, "bike", "25 min spin, 3×1 min race effort, 10 min jog, rack the bike", "", ["Keep the legs awake, nothing more","Check transition and race bag"]), {kind:"Pre-race"})
+              : S(5, "run", r[6] + " km", "", ["Easy effort, full sentences: 5:50 to 6:20 /km","Keep the long run and Sunday ride back to back"].concat(w>=10 ? ["Practise fuelling on the run"] : [])),
+    w===WEEKS ? Object.assign(S(6, "race", (state.settings.raceName || "Ironman 70.3").toUpperCase(), "Target " + GOAL, [
+                  "Swim 1,900 m: 2:05 /100 m for the first 300 m, then settle at 2:00",
+                  "Bike 90 km: hold 30 km/h, steady effort, no surges on climbs or in the first 20 km",
+                  "Run 21.1 km: first 3 km at 5:05 to 5:10 /km, then 5:00 /km. Push only in the last 5 km",
+                  "Familiar breakfast 2 to 3 hours before the start. Nothing new on race day"]), {kind:"Race day"})
+              : S(6, r[9] ? "brick" : "bike", r[7] || (r[8] + " km → " + r[9] + " km"), "", sundayHints(w, r))
+  ];
+  TESTS.filter(t => t.w===w).forEach(t => { days[t.d].test = t; });
+  return days;
 }
+function weekVolume(w){ const r = WK[w]; return {swim:r[5], indoor:r[1], ride:r[8], run:r[3] + r[6] + r[9]}; }
 
 function fmtMin(m){ if(!m) return "—"; const h = Math.floor(m/60), mm = m%60; return h ? (h+"h"+(mm?" "+mm+"m":"")) : mm+"m"; }
 function planStart(){ const r = state.settings.raceDate; return addDays(r, -dowIndex(r) - (WEEKS-1)*7); }
@@ -388,12 +533,16 @@ const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 const ICON_X = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const ICON_L = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
 const ICON_R = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
-const sportLabel = s => ({swim:"Swim",bike:"Bike",run:"Run",strength:"Strength",brick:"Brick",race:"Race",rest:"Rest"}[s]);
+const sportLabel = s => ({swim:"Swim",bike:"Bike",run:"Run",strength:"Strength",brick:"Ride + run",race:"Race",rest:"Rest"}[s]);
 const sportChip = s => '<span class="sport s-'+s+'">'+sportLabel(s)+'</span>';
 const checkBtn = (pressed, action, attrs, label) => '<button type="button" class="check" aria-pressed="'+pressed+'" aria-label="'+esc(label)+'" data-action="'+action+'" '+attrs+'>'+ICON_CHECK+'</button>';
 
 /* ---------- views ---------- */
 const view = document.getElementById("view");
+
+const testBadge = t => t ? '<span class="test-badge"><b>Test</b>'+esc(t.test)+' · '+esc(t.pass)+'</span>' : '';
+const fmtNum = n => n.toLocaleString("en-GB");
+const yearOf = iso => iso.slice(0,4);
 
 function renderToday(){
   const t = todayISO(), di = dowIndex(t), pos = planPos(t);
@@ -402,28 +551,28 @@ function renderToday(){
   let planLine, sessionHTML;
   if(pos.week){
     const s = weekPlan(pos.week)[pos.day], done = isDone(pos.week,pos.day);
-    planLine = "Week "+pos.week+" of "+WEEKS+" · "+phaseOf(pos.week)+" phase";
+    planLine = "Week "+pos.week+" of "+WEEKS+" · "+phaseOf(pos.week)+(LIGHT.includes(pos.week)?" · lighter week":"");
     const tomorrow = pos.day<6 ? weekPlan(pos.week)[pos.day+1] : (pos.week<WEEKS ? weekPlan(pos.week+1)[0] : null);
-    sessionHTML = '<div class="card hero-session">'+
-      '<div class="row between"><span class="label">Today’s session</span>'+sportChip(s.sport)+'</div>'+
+    sessionHTML = '<div class="card hero-session sp-'+s.sport+'">'+
+      '<div class="row between"><span class="label">Today · '+esc(s.kind)+'</span>'+sportChip(s.sport)+'</div>'+
       '<div class="big">'+esc(s.title)+'</div>'+
-      '<div class="muted num">'+fmtMin(s.min)+(s.dist?' · '+s.dist+' m':'')+'</div>'+
-      '<ul class="muted" style="margin:0;padding-left:18px">'+s.detail.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>'+
+      (s.sub?'<div class="muted">'+esc(s.sub)+'</div>':'')+
+      testBadge(s.test)+
+      '<ul class="muted" style="margin:0;padding-left:18px;font-size:.9rem">'+s.detail.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>'+
       '<div class="row between" style="margin-top:4px">'+
-        '<div class="row">'+checkBtn(done,"toggle-session",'data-w="'+pos.week+'" data-d="'+pos.day+'"',"Mark today’s session done")+'<span>'+(done?"Done — nice work":"Mark as done")+'</span></div>'+
+        '<div class="row">'+checkBtn(done,"toggle-session",'data-w="'+pos.week+'" data-d="'+pos.day+'"',"Mark today’s session done")+'<span>'+(done?"Done, nice work":"Mark as done")+'</span></div>'+
         '<a class="btn small" href="#training">Full week</a>'+
       '</div>'+
-      (tomorrow?'<div class="muted" style="font-size:.85rem;border-top:1px solid var(--line);padding-top:10px">Tomorrow: '+sportChip(tomorrow.sport)+' '+esc(tomorrow.title)+' · '+fmtMin(tomorrow.min)+'</div>':'')+
+      (tomorrow?'<div class="muted" style="font-size:.85rem;border-top:1px solid var(--line);padding-top:10px">Tomorrow: '+sportChip(tomorrow.sport)+' '+esc(tomorrow.title)+'</div>':'')+
     '</div>';
   } else {
-    planLine = pos.before ? "Plan starts in "+pos.daysUntilStart+" days" : "Race done — set your next race in Settings";
-    sessionHTML = '<div class="card hero-session"><span class="label">Training</span><div class="big">'+(pos.before?"Plan hasn’t started yet":"Plan complete")+'</div><a class="btn small" href="#training" style="justify-self:start">View plan</a></div>';
+    planLine = pos.before ? "Plan starts in "+pos.daysUntilStart+" days" : "Race done. Set your next race in Settings";
+    sessionHTML = '<div class="card hero-session sp-rest"><span class="label">Training</span><div class="big">'+(pos.before?"Plan hasn’t started yet":"Plan complete")+'</div><a class="btn small" href="#training" style="justify-self:start">View plan</a></div>';
   }
 
   const open = state.todos.filter(x=>!x.done).sort(byDue);
   const p = open.filter(x=>x.list==="personal"), w = open.filter(x=>x.list==="work");
   const todoLi = x => '<li>'+checkBtn(false,"toggle-todo",'data-id="'+x.id+'"',"Complete "+x.text)+'<span class="t">'+esc(x.text)+'</span>'+dueTag(x.due)+'</li>';
-
   const ym = t.slice(0,7), mt = monthTotals(ym);
 
   view.innerHTML = '<div class="page">'+
@@ -449,52 +598,122 @@ function renderToday(){
   '</div>';
 }
 
+function glanceHTML(w, pos){
+  let bars = "";
+  for(let i=1;i<=WEEKS;i++){
+    const ph = phaseInfo(i).n;
+    bars += '<button type="button" data-action="open-week" data-w="'+i+'" data-ph="'+ph+'" class="'+(LIGHT.includes(i)?'light':'')+(pos.week===i?' now':'')+'" aria-current="'+(i===w)+'" aria-label="Week '+i+', '+phaseOf(i)+(LIGHT.includes(i)?', lighter week':'')+'">'+i+'</button>';
+  }
+  const labels = PHASES.map(p => '<div data-ph="'+p.n+'" style="grid-column:'+p.from+' / '+(p.to+1)+'"><b>'+p.name+'</b><small>wk '+p.from+' to '+p.to+', '+shortDate(dateOf(p.from,0))+'</small></div>').join("");
+  return '<div class="card"><div class="row between"><h2 style="text-transform:uppercase">'+WEEKS+' weeks at a glance</h2>'+
+    '<span class="muted" style="font-size:.8rem">Tap a week to open it</span></div>'+
+    '<div class="glance" role="group" aria-label="Plan weeks">'+bars+'</div><div class="glance-labels">'+labels+'</div>'+
+    '<div class="glance-key"><span><span class="dot"></span>This week</span><span>Shorter bars are lighter weeks (5, 9, 13, 17, 21), cut by about a third</span></div></div>';
+}
+
+function weekHTML(w, t, pos){
+  const plan = weekPlan(w), r = WK[w], v = weekVolume(w), light = LIGHT.includes(w);
+  const doneCount = plan.filter((_,i)=>isDone(w,i)).length;
+  const head = '<div class="card week-head">'+
+    '<div class="row between">'+
+      '<div class="week-title"><button class="iconbtn" type="button" data-action="week-prev" aria-label="Previous week"'+(w<=1?' disabled':'')+'>'+ICON_L+'</button>'+
+      '<h2>Week '+w+(light?' ↓':'')+' · '+phaseOf(w)+'</h2>'+
+      '<button class="iconbtn" type="button" data-action="week-next" aria-label="Next week"'+(w>=WEEKS?' disabled':'')+'>'+ICON_R+'</button></div>'+
+      '<div class="row">'+(pos.week && pos.week!==w?'<button class="btn small" type="button" data-action="week-now">This week</button>':'')+
+      '<span class="pill num">'+doneCount+' / 7 done</span></div>'+
+    '</div>'+
+    '<div class="vol num">'+
+      '<span class="pill"><span class="sport s-swim">Swim</span> '+fmtNum(v.swim)+' m</span>'+
+      '<span class="pill"><span class="sport s-bike">Bike</span> '+v.indoor+' min indoor'+(v.ride?' + '+v.ride+' km':'')+'</span>'+
+      '<span class="pill"><span class="sport s-run">Run</span> '+v.run+' km</span>'+
+      '<span class="pill mono">'+shortDate(dateOf(w,0))+' to '+shortDate(dateOf(w,6))+'</span>'+
+    '</div>'+
+    (r[10]?'<div class="note">'+esc(r[10])+'</div>':'')+
+  '</div>';
+  const days = plan.map((s,i)=>{
+    const iso = dateOf(w,i), done = isDone(w,i), today = iso===t;
+    return '<div class="dcard sp-'+s.sport+(today?' is-today':'')+(done?' is-done':'')+(s.light?' is-light':'')+'">'+
+      '<div class="dh"><b>'+DOW[i]+'</b><small>'+esc(s.kind)+'</small><span class="date">'+shortDate(iso)+'</span>'+(today?'<span class="today-tag">Today</span>':'')+'</div>'+
+      '<div class="db"><span class="title">'+esc(s.title)+'</span>'+(s.sub?'<span class="sub">'+esc(s.sub)+'</span>':'')+testBadge(s.test)+
+        '<details class="more"'+(today?' open':'')+'><summary>Session details</summary><ul>'+s.detail.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></details></div>'+
+      '<div class="chk">'+checkBtn(done,"toggle-session",'data-w="'+w+'" data-d="'+i+'"',"Mark "+DOW_LONG[i]+" done")+'</div>'+
+    '</div>';
+  }).join("");
+  return head + '<div class="days">'+days+'</div>';
+}
+
+function planTableHTML(pos){
+  const hdr = '<tr><th class="meta">Wk</th><th class="meta">Starts</th>'+
+    DAY_KIND.map((k,i)=>{ const sp = i===6?"brick":["strength","bike","run","strength","swim","run"][i]; return '<th class="sh sp-'+sp+'"><b>'+DOW[i]+'</b><span>'+k+'</span></th>'; }).join("")+
+    '<th class="meta">Notes</th></tr>';
+  let rows = "";
+  for(let w=1; w<=WEEKS; w++){
+    const plan = weekPlan(w), light = LIGHT.includes(w);
+    const cells = plan.map((s,i)=>{
+      const tick = isDone(w,i) ? '<span class="tick" aria-label="done">✓</span>' : '';
+      if(s.sport==="race") return '<td class="race">'+esc(s.title)+tick+'</td>';
+      return '<td class="c sp-'+s.sport+(s.test?' test':'')+'">'+esc(s.title)+tick+(s.sub?'<span class="core">'+esc(s.sub)+'</span>':'')+'</td>';
+    }).join("");
+    rows += '<tr class="'+(light?'light':'')+(pos.week===w?' now':'')+'">'+
+      '<td class="wk"><button type="button" data-action="open-week" data-w="'+w+'" aria-label="Open week '+w+'">'+w+'</button>'+(light?'<span class="arrow">↓</span>':'')+'</td>'+
+      '<td class="starts">'+shortDate(dateOf(w,0))+'</td>'+cells+'<td class="notes">'+esc(WK[w][10])+'</td></tr>';
+  }
+  return '<div class="plan-wrap"><table class="plan-table"><thead>'+hdr+'</thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div class="plan-key"><span class="sp-bike"><i></i>Bike</span><span class="sp-run"><i></i>Run</span><span class="sp-swim"><i></i>Swim</span><span class="sp-strength"><i></i>Strength</span>'+
+    '<span>Sunday: ride km → brick run km</span><span>Core: Mon, Tue circuit, Thu</span><span>Z2 = easy, full sentences</span><span>↓ = lighter week</span><span><span class="box"></span>Test session</span><span><span class="tick">✓</span> done</span></div>';
+}
+
+function guideHTML(t){
+  const nextTest = TESTS.find(x => dateOf(x.w,x.d) >= t);
+  const testRows = TESTS.map(x=>{
+    const iso = dateOf(x.w,x.d), past = iso < t;
+    return '<tr><td class="mono" style="white-space:nowrap">'+DOW[x.d]+' '+shortDate(iso)+'</td><td class="num">'+x.w+'</td><td>'+esc(x.test)+'</td><td>'+esc(x.pass)+'</td><td>'+
+      (x===nextTest?'<span class="pill next">Next</span>':past?'<span class="pill past">Past</span>':'')+'</td></tr>';
+  }).join("");
+  const gear = state.training.gear || {};
+  return '<div class="guide">'+
+    '<div class="card"><h2>Race goal</h2><table class="gtable"><thead><tr><th>Leg</th><th>Distance</th><th>Target</th><th>Pace</th></tr></thead><tbody>'+
+      '<tr><td>Swim</td><td class="num">1,900 m</td><td class="num">38:00</td><td class="num">2:00 /100 m</td></tr>'+
+      '<tr><td>Bike</td><td class="num">90 km</td><td class="num">3:00:00</td><td class="num">30.0 km/h</td></tr>'+
+      '<tr><td>Run</td><td class="num">21.1 km</td><td class="num">1:45:30</td><td class="num">5:00 /km</td></tr>'+
+      '<tr><td>Transitions</td><td></td><td class="num">6:00</td><td></td></tr>'+
+      '<tr class="total"><td>Total</td><td></td><td class="num">'+GOAL+'</td><td></td></tr></tbody></table>'+
+      '<p class="muted" style="margin:0;font-size:.82rem">Huskisson pace held over the full distance gives about 6:06. Fallback if the week 20 test shows a 5:15 /km run: about 5:34:45.</p></div>'+
+    '<div class="card"><h2>Effort guide</h2><table class="gtable"><tbody>'+
+      [["Easy run","5:50 to 6:20 /km, full sentences"],["Tempo run","4:50 to 4:55 /km"],["10k effort","4:40 to 4:45 /km"],["Race pace run","5:00 /km"],["Race pace bike","30 km/h, steady effort"],["Race pace swim","2:00 /100 m"]]
+        .map(([a,b])=>'<tr><td>'+a+'</td><td class="num">'+b+'</td></tr>').join("")+
+      '</tbody></table><p class="muted" style="margin:0;font-size:.82rem">Set from the 47:21 10k and 1:48 half marathon. Adjust by feel and heart rate.</p></div>'+
+    '<div class="card" style="grid-column:1/-1"><h2>Tests and checkpoints</h2><div style="overflow-x:auto"><table class="gtable" style="min-width:560px"><thead><tr><th>Date</th><th>Wk</th><th>Test</th><th>Pass mark</th><th></th></tr></thead><tbody>'+testRows+'</tbody></table></div>'+
+      '<p class="muted" style="margin:0;font-size:.82rem">If two tests in a row come in well short, reset the target at that point. The week 20 run test decides between the '+GOAL+' target and the 5:34:45 fallback.</p></div>'+
+    '<div class="card" style="grid-column:1/-1"><h2>Strength by phase</h2><div style="overflow-x:auto"><table class="gtable" style="min-width:560px"><thead><tr><th></th><th>Monday: upper body and core</th><th>Thursday: legs and core</th></tr></thead><tbody>'+
+      '<tr><td><b>Base</b>, wk 2 to 9</td><td>'+UPPER_EX.join(", ")+'</td><td>'+LEGS_EX.join(", ")+'</td></tr>'+
+      '<tr><td><b>Build</b>, wk 10 to 17</td><td colspan="2">35 min. Same lifts, heavier, 6 to 8 reps. Two sets in lighter weeks.</td></tr>'+
+      '<tr><td><b>Peak</b>, wk 18 to 24</td><td colspan="2">25 to 30 min. Two sets, hold the weights.</td></tr>'+
+      '<tr><td><b>Taper</b>, wk 25 to 26</td><td colspan="2">15 to 20 min mobility and core only. Add no new exercises in the last three weeks.</td></tr>'+
+      '</tbody></table></div><p class="muted" style="margin:0;font-size:.82rem">Week 1 is mobility only. Dumbbells and a bench.</p></div>'+
+    '<div class="card"><h2>Core circuit and knee care</h2><ul><li><b>After Tuesday’s ride, 2 rounds:</b> dead bug 8 each side, plank 30 s, side plank 30 s each side, glute bridge 12.</li><li>Keep the knees tracking over the toes on squats and split squats.</li><li>If a knee niggle lasts more than 7 days, book a physio.</li></ul></div>'+
+    '<div class="card"><h2>Fuelling</h2><ul><li>60 to 80 g carbohydrate per hour on the bike and run, 500 to 750 ml fluid per hour, more in heat.</li><li>Bulk Nutrients maltodextrin and fructose mix, INFINIT as backup. Test on every Sunday ride from week 10.</li><li>Race morning: a familiar breakfast 2 to 3 hours before the start. Nothing new on race day.</li></ul></div>'+
+    '<div class="card"><h2>Race-day pacing</h2><ul><li><b>Swim:</b> 2:05 /100 m for the first 300 m, then settle at 2:00.</li><li><b>Bike:</b> hold 30 km/h, steady effort, no surges on climbs or in the first 20 km.</li><li><b>Run:</b> first 3 km at 5:05 to 5:10 /km, then 5:00 /km. Push only in the last 5 km.</li></ul></div>'+
+    '<div class="card"><h2>Gear to organise</h2><ul class="gear">'+GEAR.map(g=>'<li class="'+(gear[g.id]?'done':'')+'">'+checkBtn(!!gear[g.id],"toggle-gear",'data-id="'+g.id+'"',g.text)+'<span>'+esc(g.text)+'</span></li>').join("")+'</ul></div>'+
+    '<div class="card"><h2>Ground rules</h2><ul><li>No full rest day. Core work three times a week protects the knees.</li><li>Mon and Thu strength can swap. Keep the Saturday long run and Sunday long ride back to back.</li><li>Do not make up a missed session. If a week goes wrong, shorten Tuesday’s ride first.</li><li>Never drop the long run or long ride two weeks in a row.</li><li>Lighter weeks (5, 9, 13, 17, 21): do not add training.</li><li>Ease off for the week if something changes how you move. Skip the Sunday brick run if a knee flares.</li></ul></div>'+
+  '</div>';
+}
+
 function renderTraining(){
   const t = todayISO(), pos = planPos(t);
   if(state.ui.week == null) state.ui.week = pos.week || (pos.before ? 1 : WEEKS);
-  const w = state.ui.week, plan = weekPlan(w), ph = phaseOf(w);
-  const total = plan.reduce((a,s)=>a+s.min,0);
-  const doneCount = plan.filter((_,i)=>isDone(w,i)).length;
-  const bySport = {swim:0,bike:0,run:0,strength:0};
-  plan.forEach(s=>{ if(s.sport==="brick"){ bySport.bike+=BRICK_BIKE[w-1]; bySport.run+=BRICK_RUN[w-1]; } else if(bySport[s.sport]!=null) bySport[s.sport]+=s.min; });
-  const splitTotal = Object.values(bySport).reduce((a,b)=>a+b,0) || 1;
-  const colors = {swim:"var(--swim)",bike:"var(--bike)",run:"var(--run)",strength:"var(--str)"};
-
-  let strip = "";
-  for(let i=1;i<=WEEKS;i++){
-    strip += '<button type="button" data-action="pick-week" data-w="'+i+'" data-phase="'+phaseOf(i)+'" class="num'+(pos.week===i?' now':'')+'" aria-current="'+(i===w)+'" aria-label="Week '+i+', '+phaseOf(i)+(RECOVERY.includes(i)?' recovery':'')+'">'+i+'</button>';
-  }
-
-  const days = plan.map((s,i)=>{
-    const iso = dateOf(w,i), done = isDone(w,i), today = iso===t;
-    return '<div class="card day'+(today?' is-today':'')+(done?' is-done':'')+'">'+
-      '<div class="when"><b>'+DOW[i]+'</b><small class="num">'+shortDate(iso)+'</small>'+(today?'<small style="color:var(--accent);font-weight:600">Today</small>':'')+'</div>'+
-      '<div class="body">'+sportChip(s.sport)+'<span class="title">'+esc(s.title)+'</span>'+
-        '<span class="dur num">'+fmtMin(s.min)+(s.dist?' · '+s.dist+' m':'')+'</span>'+
-        '<details class="more"'+(today?' open':'')+'><summary>Session details</summary><ul>'+s.detail.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></details>'+
-      '</div>'+
-      (s.sport==="rest"?'<span></span>':checkBtn(done,"toggle-session",'data-w="'+w+'" data-d="'+i+'"',"Mark "+DOW_LONG[i]+" done"))+
-    '</div>';
-  }).join("");
-
-  view.innerHTML = '<div class="page">'+
-    '<div class="page-head"><div><h1>'+esc(state.settings.raceName)+' plan</h1>'+
-      '<p class="muted">16 weeks · race day <b class="num" style="color:var(--ink)">'+shortDate(state.settings.raceDate)+' '+state.settings.raceDate.slice(0,4)+'</b></p></div>'+
-      '<span class="pill sample" title="Replace with your own plan">Sample plan</span></div>'+
-    '<div class="card"><div class="phase-strip" role="group" aria-label="Plan weeks">'+strip+'</div>'+
-      '<div class="phase-legend"><span><i style="background:var(--base)"></i>Base 1–4</span><span><i style="background:var(--build)"></i>Build 5–10</span><span><i style="background:var(--peak)"></i>Peak 11–14</span><span><i style="background:var(--taper)"></i>Taper 15–16</span><span>Recovery weeks: 4, 8, 12</span></div></div>'+
-    '<div class="card" style="display:flex;flex-direction:column;gap:12px">'+
-      '<div class="row between">'+
-        '<div class="row"><button class="iconbtn" type="button" data-action="week-prev" aria-label="Previous week"'+(w<=1?' disabled':'')+'>'+ICON_L+'</button>'+
-        '<h2>Week '+w+' · '+ph+(RECOVERY.includes(w)?' (recovery)':'')+(w===WEEKS?' (race week)':'')+'</h2>'+
-        '<button class="iconbtn" type="button" data-action="week-next" aria-label="Next week"'+(w>=WEEKS?' disabled':'')+'>'+ICON_R+'</button></div>'+
-        '<div class="row"><span class="pill num">'+fmtMin(total)+' total</span><span class="pill num">'+doneCount+' / '+plan.filter(s=>s.sport!=="rest").length+' done</span>'+
-        (pos.week && pos.week!==w?'<button class="btn small" type="button" data-action="week-now">This week</button>':'')+'</div>'+
-      '</div>'+
-      '<div class="split" aria-hidden="true">'+Object.keys(bySport).map(k=>'<span style="width:'+(bySport[k]/splitTotal*100)+'%;background:'+colors[k]+'"></span>').join("")+'</div>'+
-      '<div class="split-legend num">'+Object.keys(bySport).map(k=>'<span><span class="sport s-'+k+'">'+sportLabel(k)+'</span> '+fmtMin(bySport[k])+'</span>').join("")+'</div>'+
-    '</div>'+
-    '<div class="days">'+days+'</div>'+
+  const w = state.ui.week, tv = state.ui.tview || "week";
+  const daysToRace = Math.round((toUTC(state.settings.raceDate) - toUTC(t))/DAY);
+  const start = planStart(), race = state.settings.raceDate;
+  const body = tv==="plan" ? planTableHTML(pos) : tv==="guide" ? guideHTML(t) : weekHTML(w, t, pos);
+  view.innerHTML = '<div class="page wide">'+
+    '<div class="page-head"><div><h1>'+esc(state.settings.raceName)+' training plan</h1>'+
+      '<p class="muted mono" style="font-size:.8rem;text-transform:uppercase">'+WEEKS+' weeks, Mon '+shortDate(start)+' '+yearOf(start)+' to race day Sun '+shortDate(race)+' '+yearOf(race)+'</p></div>'+
+      '<div class="row"><span class="pill">Goal <b class="num" style="color:var(--ink)">'+GOAL+'</b></span>'+(daysToRace>=0?'<span class="pill num">'+daysToRace+' days to go</span>':'')+'</div></div>'+
+    glanceHTML(w, pos)+
+    '<div class="seg" role="group" aria-label="Plan view" style="align-self:flex-start">'+
+      [["week","Week"],["plan","Full plan"],["guide","Guide"]].map(([k,l])=>'<button type="button" data-action="tview" data-v="'+k+'" aria-pressed="'+(tv===k)+'">'+l+'</button>').join("")+
+    '</div>'+ body +
   '</div>';
 }
 
@@ -576,7 +795,7 @@ function openSettings(){
   overlayRoot.innerHTML = '<div class="overlay" data-action="close-settings-bg"><form class="sheet" id="settings-form" role="dialog" aria-modal="true" aria-labelledby="set-h">'+
     '<div class="row between"><h2 id="set-h">Settings</h2><button class="iconbtn" type="button" data-action="close-settings" aria-label="Close">'+ICON_X+'</button></div>'+
     '<label class="field"><span class="label">Race name</span><input type="text" id="set-race-name" value="'+esc(s.raceName)+'"></label>'+
-    '<label class="field"><span class="label">Race date</span><input type="date" id="set-race-date" value="'+s.raceDate+'"><span class="muted" style="font-size:.8rem">The 16-week plan counts back from this date.</span></label>'+
+    '<label class="field"><span class="label">Race date</span><input type="date" id="set-race-date" value="'+s.raceDate+'"><span class="muted" style="font-size:.8rem">The 26-week plan counts back from this date (Sunday of week 26).</span></label>'+
     '<label class="field"><span class="label">Currency</span><select id="set-currency">'+Object.entries(CURRENCIES).map(([k,v])=>'<option value="'+k+'"'+(k===s.currency?' selected':'')+'>'+v+'</option>').join("")+'</select></label>'+
     '<button class="btn primary" type="submit">Save settings</button>'+
     '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">'+
@@ -613,7 +832,9 @@ document.addEventListener("click", e => {
   if(a==="close-settings-bg" && e.target!==el) return;
   switch(a){
     case "toggle-session": { const k = doneKey(el.dataset.w, el.dataset.d); if(state.training.done[k]) delete state.training.done[k]; else state.training.done[k] = Date.now(); save("training"); render(); break; }
-    case "pick-week": state.ui.week = Number(el.dataset.w); render(); break;
+    case "open-week": state.ui.week = Number(el.dataset.w); state.ui.tview = "week"; render(); break;
+    case "tview": state.ui.tview = el.dataset.v; render(); break;
+    case "toggle-gear": { const g = state.training.gear; g[el.dataset.id] = !g[el.dataset.id]; save("training"); render(); break; }
     case "week-prev": state.ui.week = Math.max(1, state.ui.week-1); render(); break;
     case "week-next": state.ui.week = Math.min(WEEKS, state.ui.week+1); render(); break;
     case "week-now": state.ui.week = planPos(todayISO()).week; render(); break;
@@ -636,7 +857,7 @@ document.addEventListener("click", e => {
     case "clear-samples": state.todos = state.todos.filter(t=>!t.sample); state.tx = state.tx.filter(t=>!t.sample); save("todos"); save("tx"); closeSettings(); render(); toast("Example items removed"); break;
     case "reset-all":
       if(!resetArmed){ resetArmed = true; el.textContent = "Tap again to erase all data"; setTimeout(()=>{ resetArmed=false; const b=document.getElementById("reset-btn"); if(b) b.textContent="Reset everything"; }, 4000); break; }
-      resetArmed = false; state.training = {done:{}}; state.todos = []; state.tx = []; save("training"); save("todos"); save("tx"); closeSettings(); render(); toast("All data erased"); break;
+      resetArmed = false; state.training = {done:{}, gear:{}}; state.todos = []; state.tx = []; save("training"); save("todos"); save("tx"); closeSettings(); render(); toast("All data erased"); break;
   }
 });
 
