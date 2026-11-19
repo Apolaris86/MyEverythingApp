@@ -12,7 +12,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: sidebar nav on desktop, bottom tab bar on phones; each section is one scrolling column of cards. */
 :root{
@@ -250,27 +250,105 @@ details.more summary::-webkit-details-marker{display:none}
 .due.overdue{color:var(--bad);font-weight:600}
 @media (max-width:560px){.todo-form{grid-template-columns:minmax(0,1fr) auto}.todo-form input[type=date]{grid-column:1}}
 
-/* Finance */
-.fin-form{display:grid;grid-template-columns:auto 110px minmax(0,1fr) minmax(0,1fr) 140px auto;gap:8px;align-items:center}
-@media (max-width:860px){.fin-form{grid-template-columns:1fr 1fr}.fin-form .seg{grid-column:1/-1;justify-self:start}.fin-form .btn{grid-column:1/-1}}
-.v.pos{color:var(--good)} .v.neg{color:var(--bad)}
-.bars{display:flex;flex-direction:column;gap:10px}
-.bar-row{display:grid;grid-template-columns:120px minmax(0,1fr) 90px;gap:10px;align-items:center;font-size:.88rem}
-.bar-track{height:10px;background:var(--surface-2);border-radius:99px;overflow:hidden}
-.bar-fill{height:100%;background:var(--accent);border-radius:99px}
-.tx-table{width:100%;border-collapse:collapse;font-size:.9rem}
-.tx-table td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
-.tx-table tr:last-child td{border-bottom:0}
-.tx-table .amt{text-align:right;white-space:nowrap;font-weight:600}
-.tx-wrap{overflow-x:auto}
-@media (max-width:560px){.bar-row{grid-template-columns:90px minmax(0,1fr) 76px}.stats{grid-template-columns:1fr 1fr 1fr}.stat .v{font-size:1.15rem}}
-
-/* ThePekFinance launcher */
-.pek-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:14px}
-.pek-links a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;text-decoration:none;color:var(--ink);background:var(--bg)}
-.pek-links a:hover{border-color:var(--accent);background:var(--accent-soft)}
-.pek-links b{font:700 1.1rem var(--f-head);text-transform:uppercase;letter-spacing:.02em}
-.pek-links span{font-size:.8rem;color:var(--muted)}
+/* PekFinance: mirrors ThePekFinance (white canvas, blue accent, green/red P&L, pill controls) */
+:root{
+  --pk-bg:#FFFFFF; --pk-fg:#202124; --pk-muted:#5F6368; --pk-line:#DADCE0; --pk-soft:#F1F3F4; --pk-grid:#E8EAED;
+  --pk-blue:#1A73E8; --pk-blue-ink:#FFFFFF; --pk-blue-soft:#E8F0FE; --pk-up:#137333; --pk-down:#C5221F;
+  --pk-font:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --pk-bg:#121417; --pk-fg:#E8EAED; --pk-muted:#9AA0A6; --pk-line:#3C4043; --pk-soft:#202326; --pk-grid:#2A2D31;
+  --pk-blue:#8AB4F8; --pk-blue-ink:#0F1A2B; --pk-blue-soft:#1C2A40; --pk-up:#81C995; --pk-down:#F28B82}}
+:root[data-theme="dark"]{
+  --pk-bg:#121417; --pk-fg:#E8EAED; --pk-muted:#9AA0A6; --pk-line:#3C4043; --pk-soft:#202326; --pk-grid:#2A2D31;
+  --pk-blue:#8AB4F8; --pk-blue-ink:#0F1A2B; --pk-blue-soft:#1C2A40; --pk-up:#81C995; --pk-down:#F28B82}
+body[data-route="finance"]{background:var(--pk-bg)}
+.pek{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px;font-family:var(--pk-font);color:var(--pk-fg);font-variant-numeric:tabular-nums}
+.pek h1,.pek h2{font-family:var(--pk-font);text-transform:none;letter-spacing:-.01em;font-weight:500;margin:0}
+.pek h1{font-size:1.7rem}
+.pek h2{font-size:1.25rem}
+.pek .up{color:var(--pk-up)} .pek .down{color:var(--pk-down)}
+.pk-muted{color:var(--pk-muted)}
+.pk-row{display:flex;align-items:center;gap:12px}
+.pk-row.between{justify-content:space-between;align-items:flex-start}
+.pk-row.wrap{flex-wrap:wrap}
+.pk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.pk-feed{font-size:.8rem;color:var(--pk-muted);margin-top:6px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.pk-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;background:var(--pk-muted)}
+.pk-dot.live{background:var(--pk-up);box-shadow:0 0 0 3px color-mix(in srgb, var(--pk-up) 25%, transparent)}
+.pk-dot.ok{background:var(--pk-blue)} .pk-dot.err{background:var(--pk-down)} .pk-dot.snap{background:#E37400}
+.pk-btn{border:0;background:var(--pk-blue);color:var(--pk-blue-ink);border-radius:999px;padding:10px 20px;font:600 .95rem var(--pk-font)}
+.pk-btn:hover{filter:brightness(1.08)}
+.pk-btn.sm{padding:7px 14px;font-size:.85rem}
+.pk-pills{display:flex;gap:10px;flex-wrap:wrap}
+.pk-pill{border:1px solid var(--pk-line);background:var(--pk-bg);color:var(--pk-fg);border-radius:999px;padding:8px 18px;font:500 .95rem var(--pk-font)}
+.pk-pill:hover{background:var(--pk-soft)}
+.pk-pill[aria-pressed="true"]{background:var(--pk-blue-soft);border-color:var(--pk-blue);color:var(--pk-blue)}
+.pk-pill.sm{padding:5px 12px;font-size:.82rem}
+.pk-pill.danger{color:var(--pk-down)}
+.pk-link{border:0;background:none;padding:0;color:var(--pk-blue);font:inherit;cursor:pointer}
+.pk-link:hover{text-decoration:underline}
+.pk-card{border:1px solid var(--pk-line);border-radius:16px;padding:22px 22px 18px;background:var(--pk-bg)}
+.pk-label{font-size:.85rem;color:var(--pk-muted)}
+.pk-total{font-size:2.5rem;font-weight:600;letter-spacing:-.02em;line-height:1.15;margin-top:4px}
+.pk-sub{font-size:.9rem;color:var(--pk-muted);margin-top:4px}
+.pk-seg{display:inline-flex;border:1px solid var(--pk-line);border-radius:999px;padding:3px;gap:2px}
+.pk-seg button{border:0;background:none;border-radius:999px;padding:6px 14px;font:500 .9rem var(--pk-font);color:var(--pk-muted)}
+.pk-seg button[aria-pressed="true"]{background:var(--pk-blue-soft);color:var(--pk-blue)}
+.pk-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.pk-chips > button:not(.pk-pill){border:0;background:none;border-radius:8px;padding:5px 11px;font:500 .82rem var(--pk-font);color:var(--pk-fg)}
+.pk-chips > button:not(.pk-pill):hover{background:var(--pk-soft)}
+.pk-chips > button[aria-pressed="true"]:not(.pk-pill){background:var(--pk-blue-soft);color:var(--pk-blue)}
+.pk-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
+.pk-stat{font-size:1.05rem;font-weight:500;margin-top:4px}
+.pk-fine{font-size:.78rem;color:var(--pk-muted);margin:16px 0 0}
+.pk-tabs{display:flex;gap:2px}
+.pk-tabs button{border:0;background:none;padding:8px 14px;border-bottom:2px solid transparent;font:500 .9rem var(--pk-font);color:var(--pk-fg)}
+.pk-tabs button[aria-pressed="true"]{color:var(--pk-blue);border-bottom-color:var(--pk-blue)}
+.pek select{border:1px solid var(--pk-line);background:var(--pk-bg);color:var(--pk-fg);border-radius:8px;padding:6px 10px;font:400 .9rem var(--pk-font);min-width:min(320px,100%)}
+.pk-chart-sum{font-size:.9rem;margin:6px 0 10px;min-height:1.3em}
+.pk-chart{position:relative;height:320px;border-top:1px solid var(--pk-line);overflow:hidden}
+.pk-chart svg{display:block}
+.pk-chart-empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--pk-muted);font-size:.9rem;text-align:center;padding:16px;background:repeating-linear-gradient(180deg,transparent 0 63px,var(--pk-grid) 63px 64px)}
+.pk-grid{stroke:var(--pk-grid);stroke-width:1}
+.pk-axis{fill:var(--pk-muted);font:400 11px var(--pk-font)}
+.pk-hover{stroke:var(--pk-muted);stroke-dasharray:3 3}
+.pk-tip{position:absolute;background:var(--pk-bg);border:1px solid var(--pk-line);border-radius:8px;padding:6px 10px;font-size:.8rem;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.12);pointer-events:none;min-width:140px}
+.pk-bottom{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(260px,1fr);gap:36px;align-items:start}
+.pk-bottom > section{display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (max-width:1440px){.pk-bottom{grid-template-columns:minmax(0,1fr)}.pk-bottom > section:last-child{max-width:640px}}
+.pk-tablewrap{border:1px solid var(--pk-line);border-radius:14px;overflow-x:auto}
+.pk-table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:640px}
+.pk-table th{padding:14px 12px;text-align:right;font-weight:500;border-bottom:1px solid var(--pk-line);white-space:nowrap}
+.pk-table th.l,.pk-table td.l{text-align:left}
+.pk-table th button{border:0;background:none;padding:0;font:500 .8rem var(--pk-font);color:var(--pk-muted);cursor:pointer}
+.pk-table th button.on{color:var(--pk-fg);font-weight:600}
+.pk-table th button span{font-size:.7rem}
+.pk-table td{padding:14px 12px;text-align:right;border-bottom:1px solid var(--pk-line);vertical-align:middle;white-space:nowrap}
+.pk-table tr:last-child td{border-bottom:0}
+.pk-table tbody tr:hover td{background:var(--pk-soft)}
+.pk-table td small{display:block;font-size:.75rem;margin-top:2px}
+.pk-table td.pk-val{font-weight:500}
+.pk-symrow{display:flex;align-items:center;gap:6px}
+.pk-sym{font:600 .82rem var(--f-mono);color:var(--pk-blue);letter-spacing:.02em}
+.pk-pen{border:0;background:none;padding:2px;color:var(--pk-muted);border-radius:4px;display:grid;place-items:center}
+.pk-pen:hover{color:var(--pk-fg);background:var(--pk-line)}
+.pk-pen svg{width:13px;height:13px}
+.pk-name{font-size:.8rem;color:var(--pk-muted);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.pk-editrow td{background:var(--pk-blue-soft)!important;text-align:left}
+.pk-edit{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.pk-edit label{display:flex;flex-direction:column;gap:3px;font-size:.75rem;color:var(--pk-muted)}
+.pk-edit input,.pek .field input{border:1px solid var(--pk-line);background:var(--pk-bg);color:var(--pk-fg);border-radius:8px;padding:7px 10px;font:400 .92rem var(--pk-font);width:130px}
+.pek .field input{width:100%}
+.pk-empty{color:var(--pk-muted)}
+.pk-allocviews{margin-top:0}
+.pk-alloc{display:flex;flex-direction:column;gap:12px}
+.pk-arow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.45fr);align-items:center;gap:12px;font-size:.9rem}
+.pk-aname{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-atrack{display:flex;align-items:center;gap:8px}
+.pk-afill{height:14px;background:var(--pk-blue);border-radius:2px;min-width:2px}
+.pk-apct{font-size:.8rem;white-space:nowrap}
+@media (max-width:640px){.pk-total{font-size:2rem}.pk-stats{grid-template-columns:1fr 1fr}.pk-tabs button{padding:8px 9px}}
 
 /* Settings overlay */
 .overlay{position:fixed;inset:0;background:rgba(10,14,22,.5);display:grid;place-items:center;z-index:50;padding:16px}
@@ -328,10 +406,9 @@ const state = {
   settings: store.get("settings", null),
   training: store.get("training", { done:{} }),
   todos: store.get("todos", null),
-  tx: store.get("tx", null),
-  ui: { todoList:"personal", week:null, month:null, txType:"expense", tview:"week" }
+  ui: { todoList:"personal", week:null, tview:"week", editHolding:null }
 };
-if(!state.settings){ state.settings = { raceDate:"2027-05-02", raceName:"Ironman 70.3", currency:"EUR", planVersion:2 }; store.set("settings", state.settings); }
+if(!state.settings){ state.settings = { raceDate:"2027-05-02", raceName:"Ironman 70.3", planVersion:2 }; store.set("settings", state.settings); }
 if(state.settings.planVersion !== 2){
   // v1 used a 16-week sample plan; switch to the real 26-week plan and clear old ticks.
   Object.assign(state.settings, {raceDate:"2027-05-02", raceName:"Ironman 70.3", planVersion:2});
@@ -340,7 +417,6 @@ if(state.settings.planVersion !== 2){
 }
 if(!state.training.gear) state.training.gear = {};
 if(!state.todos){ state.todos = sampleTodos(); store.set("todos", state.todos); }
-if(!state.tx){ state.tx = sampleTx(); store.set("tx", state.tx); }
 const save = k => store.set(k, state[k]);
 
 function sampleTodos(){
@@ -354,24 +430,6 @@ function sampleTodos(){
     {id:uid(), list:"work", text:"Review budget proposal", due:"", done:true, sample:true, created:Date.now()+5}
   ];
 }
-function sampleTx(){
-  const ym = todayISO().slice(0,7);
-  const d = n => ym+"-"+pad(n);
-  const day = Math.max(1, Math.min(28, Number(todayISO().slice(8,10))));
-  const s = (n) => d(Math.min(n, day));
-  return [
-    {id:uid(), type:"income", amount:3200, category:"Salary", note:"Monthly salary", date:s(1), sample:true},
-    {id:uid(), type:"expense", amount:1100, category:"Housing", note:"Rent", date:s(1), sample:true},
-    {id:uid(), type:"expense", amount:86.40, category:"Groceries", note:"Weekly shop", date:s(4), sample:true},
-    {id:uid(), type:"expense", amount:129, category:"Training & gear", note:"Tri-suit", date:s(7), sample:true},
-    {id:uid(), type:"expense", amount:45, category:"Transport", note:"Fuel", date:s(9), sample:true},
-    {id:uid(), type:"expense", amount:64.10, category:"Groceries", note:"Weekly shop", date:s(11), sample:true},
-    {id:uid(), type:"expense", amount:38.50, category:"Eating out", note:"Dinner", date:s(14), sample:true},
-    {id:uid(), type:"expense", amount:25, category:"Bills", note:"Phone plan", date:s(15), sample:true},
-    {id:uid(), type:"income", amount:240, category:"Freelance", note:"Side project", date:s(16), sample:true}
-  ];
-}
-
 /* ---------- Ironman 70.3 plan: 26 weeks, Mon 2 Nov 2026 to race day Sun 2 May 2027 (from the PDF plan) ---------- */
 const WEEKS = 26;
 const LIGHT = [5, 9, 13, 17, 21];
@@ -524,21 +582,399 @@ function dateOf(w, d){ return addDays(planStart(), (w-1)*7 + d); }
 const doneKey = (w,d) => w+"-"+d;
 const isDone = (w,d) => !!state.training.done[doneKey(w,d)];
 
-/* ---------- money ---------- */
-const CURRENCIES = {EUR:"Euro (€)", HUF:"Hungarian forint (Ft)", GBP:"Pound (£)", USD:"US dollar ($)"};
-function money(n){
-  try{ return new Intl.NumberFormat(undefined,{style:"currency",currency:state.settings.currency,maximumFractionDigits: state.settings.currency==="HUF"?0:2}).format(n); }
-  catch(e){ return n.toFixed(2)+" "+state.settings.currency; }
+/* ---------- PekFinance portfolio (styled after ThePekFinance) ---------- */
+// [symbol, name, shares, avg cost, screenshot price, screenshot 1D change for the position ($), asset type, sector, country]
+const SEED = [
+  ["META","Meta Platforms, Inc.",64,172.78,616.38,-159.36,"Stock","Communication Services","United States"],
+  ["MSFT","Microsoft Corporation",60,265.41,508.29,123.00,"Stock","Technology","United States"],
+  ["GOOGL","Alphabet Inc.",100,159.57,282.44,224.00,"Stock","Communication Services","United States"],
+  ["AMZN","Amazon.com, Inc.",80,147.76,267.74,788.00,"Stock","Consumer Cyclical","United States"],
+  ["TSLA","Tesla, Inc.",50,202.17,383.72,180.50,"Stock","Consumer Cyclical","United States"],
+  ["GXC","State Street SPDR S&P China ETF",212.9846,83.82,78.45,-183.68,"ETF","Diversified","China"],
+  ["V","Visa Inc.",30,226.75,415.22,-46.50,"Stock","Financial Services","United States"],
+  ["UNH","UnitedHealth Group Incorporated",30,320.56,349.91,-1193.10,"Stock","Healthcare","United States"],
+  ["MCD","McDonald's Corporation",30,259.86,274.03,-53.70,"Stock","Consumer Cyclical","United States"],
+  ["FTNT","Fortinet, Inc.",60,82.50,131.81,438.60,"Stock","Technology","United States"],
+  ["PANW","Palo Alto Networks, Inc.",20,169.73,339.92,612.60,"Stock","Technology","United States"],
+  ["NVDA","NVIDIA Corporation",40,106.66,150.96,-180.00,"Stock","Technology","United States"],
+  ["AAPL","Apple Inc.",15,199.32,352.45,8.10,"Stock","Technology","United States"],
+  ["DIS","The Walt Disney Company",40,85.48,122.36,216.80,"Stock","Communication Services","United States"],
+  ["IGV","iShares Expanded Tech-Software Sector ETF",50,78.00,96.94,60.00,"ETF","Technology","United States"],
+  ["BXSL","Blackstone Secured Lending Fund",200,26.14,23.43,28.00,"Stock","Financial Services","United States"],
+  ["ELV","Elevance Health, Inc.",10,327.68,400.84,-330.90,"Stock","Healthcare","United States"],
+  ["CPRT","Copart, Inc.",120,46.15,31.46,1.20,"Stock","Industrials","United States"],
+  ["TMO","Thermo Fisher Scientific Inc.",5,407.59,692.74,29.75,"Stock","Healthcare","United States"],
+  ["SHLD","Global X Defense Tech ETF",60,51.51,57.68,-45.60,"ETF","Industrials","Global"],
+  ["AIPO","Defiance AI & Power Infrastructure ETF",140,27.30,22.69,8.40,"ETF","Utilities","United States"],
+  ["BOTZ","Global X Robotics & Artificial Intelligence ETF",100,29.37,29.71,0,"ETF","Technology","Global"],
+  ["VEEV","Veeva Systems Inc.",10,190.23,277.20,-112.10,"Stock","Healthcare","United States"],
+  ["PBDC","Putnam BDC Income ETF",100,31.94,25.47,-12.00,"ETF","Financial Services","United States"],
+  ["TLT","iShares 20+ Year Treasury Bond ETF",30,90.66,80.22,20.10,"Bond ETF","Bonds","United States"],
+  ["NVO","Novo Nordisk A/S",50,53.67,39.43,-63.50,"Stock","Healthcare","Denmark"],
+  ["CRM","Salesforce, Inc.",10,207.50,190.40,-41.20,"Stock","Technology","United States"],
+  ["NOW","ServiceNow, Inc.",20,116.45,90.59,-46.20,"Stock","Technology","United States"],
+  ["SPCX","Space Exploration Technologies Corp.",10,146.18,143.50,18.00,"Stock","Industrials","United States"],
+  ["VBK","Vanguard Small-Cap Growth ETF",4,257.00,317.14,6.24,"ETF","Diversified","United States"],
+  ["WM","Waste Management, Inc.",5,200.00,241.21,-7.40,"Stock","Industrials","United States"],
+  ["ADBE","Adobe Inc.",5,429.00,226.20,-46.75,"Stock","Technology","United States"],
+  ["NUKZ","Range Nuclear Renaissance ETF",20,58.00,53.12,-3.60,"ETF","Utilities","Global"],
+  ["CELH","Celsius Holdings, Inc.",30,38.90,32.75,47.10,"Stock","Consumer Defensive","United States"],
+  ["TCEHY","Tencent Holdings Limited",20,72.59,46.13,-22.80,"Stock","Communication Services","China"],
+  ["NLR","VanEck Uranium and Nuclear ETF",10,135.00,82.99,-13.10,"ETF","Energy","Global"],
+  ["XPEV","XPeng Inc.",50,19.81,9.74,-12.50,"Stock","Consumer Cyclical","China"]
+];
+const SNAP_AUD = 403308.75 / 270731.52; // A$ per US$ implied by the screenshot
+
+function seedPortfolio(){
+  return {
+    portfolios: { investment: SEED.map(r => ({id:uid(), symbol:r[0], name:r[1], shares:r[2], avg:r[3], type:r[6], sector:r[7], country:r[8]})), trading: [] },
+    active:"investment", ccy:"USD", period:"1D", range:"6M", chartSym:"all", sort:{k:"value", d:-1}, alloc:"holding", allocAll:false
+  };
 }
-const EXP_CATS = ["Housing","Groceries","Transport","Training & gear","Eating out","Bills","Health","Other"];
-const INC_CATS = ["Salary","Freelance","Other income"];
-function monthTx(ym){ return state.tx.filter(t => t.date.slice(0,7) === ym); }
-function monthTotals(ym){
-  let inc=0, exp=0; for(const t of monthTx(ym)){ if(t.type==="income") inc+=t.amount; else exp+=t.amount; }
-  return {inc, exp, net:inc-exp};
+function seedQuotes(){
+  const q = {};
+  SEED.forEach(r => { const ch = r[5]/r[2], prev = r[4]-ch; q[r[0]] = {price:r[4], change:ch, prev, dp: prev ? ch/prev*100 : 0, ts:0, src:"snapshot"}; });
+  return q;
 }
-function shiftMonth(ym, n){ let [y,m] = ym.split("-").map(Number); m += n; while(m<1){m+=12;y--} while(m>12){m-=12;y++} return y+"-"+pad(m); }
-function monthLabel(ym){ const [y,m] = ym.split("-").map(Number); return MON_LONG[m-1]+" "+y; }
+state.pf = store.get("pf", null) || seedPortfolio();
+state.quotes = store.get("quotes", null) || seedQuotes();
+state.fx = store.get("fx", null) || {aud:SNAP_AUD, src:"snapshot"};
+state.hist = {};
+store.set("pf", state.pf); store.set("quotes", state.quotes);
+
+const pfHoldings = () => state.pf.portfolios[state.pf.active] || [];
+const allSymbols = () => [...new Set(Object.values(state.pf.portfolios).flat().map(h => h.symbol))];
+function pekBase(){ const u = (state.settings.financeUrl || "").trim().replace(/\/+$/, ""); return /^https?:\/\/\S+$/i.test(u) ? u : ""; }
+const fhKey = () => (state.settings.finnhubKey || "").trim();
+const srcKind = () => pekBase() ? "pek" : fhKey() ? "finnhub" : "snapshot";
+
+/* --- numbers --- */
+const ccyFmt = {};
+function cur(n, ccy){ ccy = ccy || state.pf.ccy; if(n==null || !isFinite(n)) return "—"; const f = ccyFmt[ccy] || (ccyFmt[ccy] = new Intl.NumberFormat("en-US",{style:"currency",currency:ccy,minimumFractionDigits:2,maximumFractionDigits:2})); return f.format(ccy==="AUD" ? n*state.fx.aud : n); }
+function usd(n){ if(n==null || !isFinite(n)) return "—"; return cur(n, "USD"); }
+function signed(n, ccy){ if(n==null || !isFinite(n)) return "—"; return (n>0?"+":n<0?"−":"") + cur(Math.abs(n), ccy); }
+function signedUsd(n){ return signed(n, "USD"); }
+function pctTxt(n){ if(n==null || !isFinite(n)) return "—"; return (n>0?"+":n<0?"−":"") + Math.abs(n).toFixed(2) + "%"; }
+const tone = n => n>0 ? "up" : n<0 ? "down" : "";
+const sharesTxt = n => Number.isInteger(n) ? String(n) : String(+n.toFixed(4));
+
+function rowCalc(h){
+  const q = state.quotes[h.symbol] || {};
+  const price = q.price, cost = h.shares*h.avg;
+  const value = price!=null ? h.shares*price : null;
+  const day = q.change!=null ? h.shares*q.change : null;
+  const gain = value!=null ? value - cost : null;
+  return {h, q, price, cost, value, day, dayPct:q.dp, gain, gainPct: gain!=null && cost ? gain/cost*100 : null};
+}
+function pfTotals(rows){
+  let value=0, cost=0, day=0, prevValue=0;
+  rows.forEach(r => { cost += r.cost; if(r.value!=null){ value += r.value; day += r.day||0; prevValue += r.value - (r.day||0); } });
+  return {value, cost, day, dayPct: prevValue ? day/prevValue*100 : 0, gain: value-cost, gainPct: cost ? (value-cost)/cost*100 : 0};
+}
+function periodChange(rows, period, totals){
+  if(period==="1D") return {chg: totals.day, pct: totals.dayPct};
+  const hist = state.hist[period]; if(!hist || !hist.data) return null;
+  let chg = 0, base = 0, got = 0;
+  rows.forEach(r => { const s = hist.data[r.h.symbol]; if(!s || !s.length || r.price==null) return; got++; const b = s[0][1]; chg += r.h.shares*(r.price-b); base += r.h.shares*b; });
+  return got ? {chg, pct: base ? chg/base*100 : 0, partial: got < rows.length} : null;
+}
+
+/* --- data feed: ThePekFinance /api (quotes, history, FX) or Finnhub (quotes + live trades) --- */
+const feed = {status:"idle", msg:"", last:0, busy:false, ws:null, wsOpen:false, histBusy:{}};
+const num = v => (v==null || v==="" || isNaN(+v)) ? null : +v;
+function normQuote(q){
+  if(!q) return null;
+  const o = {symbol:String(q.symbol||q.ticker||"").toUpperCase(), price:num(q.price ?? q.regularMarketPrice ?? q.c ?? q.last), change:num(q.change ?? q.regularMarketChange ?? q.d), dp:num(q.changePercent ?? q.regularMarketChangePercent ?? q.dp), prev:num(q.previousClose ?? q.regularMarketPreviousClose ?? q.prevClose ?? q.pc), name:q.name || q.shortName || q.longName || ""};
+  if(o.prev==null && o.price!=null && o.change!=null) o.prev = o.price - o.change;
+  if(o.change==null && o.price!=null && o.prev!=null) o.change = o.price - o.prev;
+  if(o.dp==null && o.change!=null && o.prev) o.dp = o.change/o.prev*100;
+  return o.symbol && o.price!=null ? o : null;
+}
+function applyQuote(o, src){
+  const q = state.quotes[o.symbol] || (state.quotes[o.symbol] = {});
+  Object.assign(q, {price:o.price, change:o.change ?? q.change ?? 0, dp:o.dp ?? q.dp ?? 0, prev:o.prev ?? q.prev, ts:Date.now(), src});
+  if(o.name) Object.values(state.pf.portfolios).flat().forEach(h => { if(h.symbol===o.symbol && !h.name) h.name = o.name; });
+}
+function normCandles(arr){
+  if(!Array.isArray(arr)) return [];
+  return arr.map(c => {
+    let t = c.time ?? c.t ?? c.date ?? c.timestamp; const close = num(c.close ?? c.c ?? c.adjClose ?? c.value);
+    if(typeof t === "string") t = Date.parse(t); else if(typeof t === "number" && t < 1e12) t *= 1000;
+    return [t, close];
+  }).filter(p => isFinite(p[0]) && p[1]!=null).sort((a,b) => a[0]-b[0]);
+}
+async function pekGet(path){
+  const r = await fetch(pekBase() + path, {headers:{accept:"application/json"}});
+  if(!r.ok) throw new Error("ThePekFinance API answered " + r.status);
+  return r.json();
+}
+const chunk = (a, n) => { const o = []; for(let i=0;i<a.length;i+=n) o.push(a.slice(i,i+n)); return o; };
+
+async function refreshQuotes(){
+  const kind = srcKind(), syms = allSymbols();
+  if(kind==="snapshot" || !syms.length || feed.busy) return;
+  feed.busy = true; feed.last = Date.now();
+  try{
+    if(kind==="pek"){
+      for(const c of chunk(syms, 50)){
+        const res = await pekGet("/api/quotes?symbols=" + encodeURIComponent(c.join(",")));
+        (Array.isArray(res) ? res : Object.values(res || {})).forEach(x => { const o = normQuote(x); if(o) applyQuote(o, "pek"); });
+      }
+      try{ const fx = await pekGet("/api/fx"); if(fx && +fx.AUD > 0){ state.fx = {aud: 1/(+fx.AUD), src:"live"}; store.set("fx", state.fx); } }catch(e){}
+    } else {
+      for(const s of syms){
+        const r = await fetch("https://finnhub.io/api/v1/quote?symbol=" + encodeURIComponent(s) + "&token=" + encodeURIComponent(fhKey()));
+        if(r.status===401 || r.status===403) throw new Error("Finnhub rejected the API key");
+        if(!r.ok) continue;
+        const q = await r.json();
+        if(q && q.c) applyQuote({symbol:s, price:q.c, change:q.d, dp:q.dp, prev:q.pc}, "finnhub");
+      }
+    }
+    feed.status = "ok"; feed.msg = "";
+    store.set("quotes", state.quotes); store.set("pf", state.pf);
+  }catch(e){
+    feed.status = "error";
+    feed.msg = (e && e.message && !/Failed to fetch|NetworkError|Load failed/i.test(e.message)) ? e.message : "Couldn’t reach the price source (network or CORS blocked)";
+  }
+  feed.busy = false; schedulePaint();
+}
+async function ensureHist(range){
+  if(srcKind()!=="pek") return;
+  const h = state.hist[range];
+  if((h && Date.now()-h.at < 10*60e3) || feed.histBusy[range]) return;
+  feed.histBusy[range] = true;
+  try{
+    const data = {};
+    for(const c of chunk(allSymbols(), 60)){
+      const res = await pekGet("/api/histories?symbols=" + encodeURIComponent(c.join(",")) + "&range=" + range);
+      Object.keys(res || {}).forEach(s => { data[s.toUpperCase()] = normCandles(res[s]); });
+    }
+    state.hist[range] = {at:Date.now(), data};
+  }catch(e){ state.hist[range] = {at:Date.now(), data:null, err:e.message}; }
+  feed.histBusy[range] = false; schedulePaint();
+}
+function connectWS(){
+  const key = fhKey(); if(!key || feed.ws) return;
+  try{
+    const ws = new WebSocket("wss://ws.finnhub.io?token=" + encodeURIComponent(key)); feed.ws = ws;
+    ws.onopen = () => { feed.wsOpen = true; allSymbols().forEach(s => ws.send(JSON.stringify({type:"subscribe", symbol:s}))); schedulePaint(); };
+    ws.onmessage = ev => {
+      let m; try{ m = JSON.parse(ev.data); }catch(e){ return; }
+      if(m.type!=="trade" || !m.data) return;
+      m.data.forEach(t => { const q = state.quotes[t.s]; if(!q) return; q.price = t.p; if(q.prev){ q.change = t.p - q.prev; q.dp = q.change/q.prev*100; } q.ts = Date.now(); q.src = "live"; });
+      schedulePaint();
+    };
+    ws.onclose = () => { feed.ws = null; feed.wsOpen = false; schedulePaint(); if(fhKey()) setTimeout(connectWS, 15000); };
+    ws.onerror = () => { try{ ws.close(); }catch(e){} };
+  }catch(e){ feed.ws = null; }
+}
+function resetFeed(){
+  if(feed.ws){ const w = feed.ws; feed.ws = null; w.onclose = null; try{ w.close(); }catch(e){} feed.wsOpen = false; }
+  state.hist = {}; feed.status = "idle"; feed.msg = ""; feed.last = 0;
+  connectWS(); refreshQuotes();
+}
+function usMarketOpen(){
+  try{
+    const p = Object.fromEntries(new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",weekday:"short",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date()).map(x => [x.type, x.value]));
+    if(p.weekday==="Sat" || p.weekday==="Sun") return false;
+    const m = (+p.hour)*60 + (+p.minute); return m >= 570 && m < 960;
+  }catch(e){ return false; }
+}
+let paintTimer = null, lastPaint = 0;
+function schedulePaint(){
+  if(paintTimer) return;
+  paintTimer = setTimeout(() => {
+    paintTimer = null; lastPaint = Date.now();
+    const r = route(); if(r!=="finance" && r!=="today") return;
+    const a = document.activeElement;
+    if(state.ui.editHolding || (a && view.contains(a) && /INPUT|SELECT|TEXTAREA/.test(a.tagName))) return;
+    render();
+  }, Math.max(0, 1000 - (Date.now() - lastPaint)));
+}
+setInterval(() => {
+  if(document.hidden) return;
+  const kind = srcKind(); if(kind==="snapshot") return;
+  const open = usMarketOpen(), every = kind==="finnhub" ? (open ? 60e3 : 300e3) : (open ? 15e3 : 300e3);
+  if(Date.now() - feed.last >= every) refreshQuotes();
+}, 5000);
+
+/* --- view --- */
+const PERIODS = ["1D","5D","1M","6M","YTD","1Y","2Y"];
+const RANGES = ["1M","6M","YTD","1Y","2Y","5Y"];
+const ALLOC_VIEWS = [["holding","Holding"],["sector","Sector"],["type","Asset type"],["country","Country"]];
+const COLS = [["symbol","Symbol","l"],["shares","Shares"],["avg","Avg cost"],["price","Price"],["value","Value"],["day","1D change"],["gain","Total gain"]];
+
+function feedLine(){
+  const kind = srcKind(), open = usMarketOpen();
+  const mkt = '<span class="pk-muted">US market '+(open?'open':'closed')+'</span>';
+  if(kind==="snapshot") return '<span class="pk-dot snap"></span>Prices from your screenshot. Add a price source in <button type="button" class="pk-link" data-action="open-settings">Settings</button> for live updates · '+mkt;
+  if(feed.status==="error") return '<span class="pk-dot err"></span>'+esc(feed.msg)+'. Showing last known prices · '+mkt;
+  const live = feed.wsOpen && open;
+  const when = feed.last ? new Date(Math.max(feed.last, ...Object.values(state.quotes).map(q=>q.ts||0))).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"}) : "";
+  const src = kind==="pek" ? "ThePekFinance" : "Finnhub";
+  return '<span class="pk-dot '+(live||(open&&kind==="pek")?'live':'ok')+'"></span>'+(feed.status==="idle"?'Connecting to '+src+'…':(live?'Live':open?'Updating every '+(kind==="pek"?'15 s':'minute'):'Last prices')+' · '+src+(when?' · '+when:''))+(feed.wsOpen?' · real-time trades on':'')+' · '+mkt;
+}
+
+function seriesFor(rows, range, sym){
+  const hist = state.hist[range]; if(!hist || !hist.data) return null;
+  const use = sym==="all" ? rows : rows.filter(r => r.h.symbol===sym);
+  const byDay = new Map();
+  use.forEach(r => (hist.data[r.h.symbol]||[]).forEach(([t]) => { const k = new Date(t).toISOString().slice(0,10); if(!byDay.has(k)) byDay.set(k, t); }));
+  const days = [...byDay.entries()].sort((a,b) => a[1]-b[1]);
+  if(days.length < 2) return null;
+  const out = days.map(([,t]) => [t, 0]);
+  use.forEach(r => {
+    const s = hist.data[r.h.symbol] || []; let j = 0, last = s.length ? s[0][1] : null;
+    out.forEach(p => { while(j < s.length && s[j][0] <= p[0] + 12*3600e3){ last = s[j][1]; j++; } if(last!=null) p[1] += r.h.shares*last; });
+  });
+  const now = use.reduce((a,r) => a + (r.value||0), 0);
+  if(now) out.push([Date.now(), now]);
+  return out;
+}
+
+function renderFinance(){
+  const pf = state.pf, rows = pfHoldings().map(rowCalc), t = pfTotals(rows);
+  if(pf.period!=="1D") ensureHist(pf.period);
+  ensureHist(pf.range);
+  const pc = periodChange(rows, pf.period, t);
+  const other = pf.ccy==="USD" ? "AUD" : "USD";
+  const k = pf.sort.k, d = pf.sort.d;
+  const sorted = rows.slice().sort((a,b) => {
+    const v = r => k==="symbol" ? r.h.symbol : k==="shares" ? r.h.shares : k==="avg" ? r.h.avg : k==="price" ? (r.price??-Infinity) : k==="day" ? (r.day??-Infinity) : k==="gain" ? (r.gain??-Infinity) : (r.value??-Infinity);
+    const A = v(a), B = v(b); return (A<B ? -1 : A>B ? 1 : 0) * d;
+  });
+  const syms = rows.map(r => r.h.symbol);
+  if(pf.chartSym!=="all" && !syms.includes(pf.chartSym)) pf.chartSym = "all";
+
+  const head = COLS.map(([key,label,al]) => '<th class="'+(al?'l':'')+'"><button type="button" data-action="pk-sort" data-k="'+key+'" class="'+(k===key?'on':'')+'">'+label+' <span aria-hidden="true">'+(k===key ? (d<0?'▼':'▲') : '▾')+'</span></button></th>').join("");
+  const body = sorted.map(r => {
+    const h = r.h;
+    if(state.ui.editHolding===h.id) return '<tr class="pk-editrow"><td colspan="7"><form id="holding-edit-form" data-id="'+h.id+'" class="pk-edit" autocomplete="off">'+
+      '<b class="pk-sym">'+esc(h.symbol)+'</b>'+
+      '<label>Shares<input type="number" id="he-shares" step="any" min="0" value="'+h.shares+'" required></label>'+
+      '<label>Avg cost (USD)<input type="number" id="he-avg" step="any" min="0" value="'+h.avg+'" required></label>'+
+      '<button class="pk-btn sm" type="submit">Save</button><button class="pk-pill sm" type="button" data-action="pk-cancel-edit">Cancel</button>'+
+      '<button class="pk-pill sm danger" type="button" data-action="pk-delete" data-id="'+h.id+'" id="pk-del-btn">Delete</button></form></td></tr>';
+    return '<tr><td class="l"><div class="pk-symrow"><span class="pk-sym">'+esc(h.symbol)+'</span><button type="button" class="pk-pen" data-action="pk-edit" data-id="'+h.id+'" aria-label="Edit '+esc(h.symbol)+'">'+ICON_EDIT+'</button></div><div class="pk-name">'+esc(h.name||"")+'</div></td>'+
+      '<td>'+sharesTxt(h.shares)+'</td><td>'+usd(h.avg)+'</td>'+
+      '<td>'+usd(r.price)+'<small class="'+tone(r.dayPct)+'">'+pctTxt(r.dayPct)+'</small></td>'+
+      '<td class="pk-val">'+usd(r.value)+'</td>'+
+      '<td class="'+tone(r.day)+'">'+signedUsd(r.day)+'<small>'+pctTxt(r.dayPct)+'</small></td>'+
+      '<td class="'+tone(r.gain)+'">'+signedUsd(r.gain)+'<small>'+pctTxt(r.gainPct)+'</small></td></tr>';
+  }).join("");
+
+  // allocation
+  const groups = {};
+  rows.forEach(r => { if(!r.value) return; const key = pf.alloc==="holding" ? r.h.symbol : (r.h[pf.alloc] || "Other"); groups[key] = (groups[key]||0) + r.value; });
+  const alloc = Object.entries(groups).sort((a,b) => b[1]-a[1]);
+  const shown = pf.allocAll ? alloc : alloc.slice(0, 10), maxA = alloc.length ? alloc[0][1] : 1;
+  const allocHTML = shown.map(([name,v]) => '<div class="pk-arow" title="'+esc(name)+': '+usd(v)+'"><span class="pk-aname">'+esc(name)+'</span><span class="pk-atrack"><span class="pk-afill" style="width:'+(v/maxA*78)+'%"></span><span class="pk-apct">'+(t.value ? (v/t.value*100).toFixed(1) : "0.0")+'%</span></span></div>').join("");
+
+  const hist = state.hist[pf.range];
+  const chartNote = srcKind()!=="pek" ? 'Value over time needs ThePekFinance as the price source (Settings).'
+    : (!hist || feed.histBusy[pf.range]) ? 'Loading price history…'
+    : hist.err ? 'Couldn’t load price history: '+esc(hist.err)+'.' : '';
+
+  view.innerHTML = '<div class="pek">'+
+    '<div class="pk-head"><div><h1>Portfolio</h1><div class="pk-feed">'+feedLine()+'</div></div><button type="button" class="pk-btn" data-action="pk-add">+ Add holding</button></div>'+
+    '<div class="pk-pills" role="group" aria-label="Portfolio">'+[["investment","Investment"],["trading","Trading"]].map(([id,l]) => '<button type="button" class="pk-pill" data-action="pk-portfolio" data-id="'+id+'" aria-pressed="'+(pf.active===id)+'">'+l+'</button>').join("")+'</div>'+
+    '<section class="pk-card">'+
+      '<div class="pk-row between"><div><div class="pk-label">Total value</div><div class="pk-total">'+cur(t.value)+'</div><div class="pk-sub">≈ '+cur(t.value, other).replace(/^\$/, other==="USD"?"US$":"$")+'</div></div>'+
+        '<div class="pk-seg" role="group" aria-label="Currency">'+["USD","AUD"].map(c => '<button type="button" data-action="pk-ccy" data-c="'+c+'" aria-pressed="'+(pf.ccy===c)+'">'+c+'</button>').join("")+'</div></div>'+
+      '<div class="pk-chips" role="group" aria-label="Gain period">'+PERIODS.map(p => '<button type="button" data-action="pk-period" data-p="'+p+'" aria-pressed="'+(pf.period===p)+'">'+p+'</button>').join("")+'</div>'+
+      '<div class="pk-stats">'+
+        '<div><div class="pk-label">'+pf.period+' change</div><div class="pk-stat '+(pc?tone(pc.chg):'')+'">'+(pc ? signed(pc.chg)+' ('+pctTxt(pc.pct)+')' : (srcKind()==="pek" ? '…' : '<span class="pk-muted">Needs price history</span>'))+'</div></div>'+
+        '<div><div class="pk-label">Total gain</div><div class="pk-stat '+tone(t.gain)+'">'+signed(t.gain)+' ('+pctTxt(t.gainPct)+')</div></div>'+
+        '<div><div class="pk-label">Cost basis</div><div class="pk-stat">'+cur(t.cost)+'</div></div>'+
+      '</div>'+
+      '<p class="pk-fine">Converted at '+(state.fx.src==="live"?'today’s':'the screenshot’s')+' exchange rate (1 USD = '+state.fx.aud.toFixed(4)+' AUD).'+(pc && pc.partial ? ' Some holdings have no history for this period.' : '')+'</p>'+
+    '</section>'+
+    '<section>'+
+      '<div class="pk-row between wrap"><div class="pk-row wrap"><h2>Value over time</h2><select id="pk-chart-sym" aria-label="Holding for chart"><option value="all">All holdings</option>'+syms.slice().sort().map(s => '<option value="'+s+'"'+(pf.chartSym===s?' selected':'')+'>'+s+'</option>').join("")+'</select></div>'+
+        '<div class="pk-tabs" role="group" aria-label="Chart range">'+RANGES.map(r => '<button type="button" data-action="pk-range" data-r="'+r+'" aria-pressed="'+(pf.range===r)+'">'+r+'</button>').join("")+'</div></div>'+
+      '<div class="pk-chart-sum" id="pk-chart-sum"></div>'+
+      '<div class="pk-chart" id="pk-chart">'+(chartNote ? '<div class="pk-chart-empty">'+chartNote+'</div>' : '')+'</div>'+
+    '</section>'+
+    '<div class="pk-bottom">'+
+      '<section><h2>Holdings</h2>'+(rows.length ? '<div class="pk-tablewrap"><table class="pk-table"><thead><tr>'+head+'</tr></thead><tbody>'+body+'</tbody></table></div>'
+        : '<div class="pk-card pk-empty">No holdings in this portfolio yet. <button type="button" class="pk-link" data-action="pk-add">Add one</button>.</div>')+'</section>'+
+      '<section><h2>Allocation</h2><div class="pk-chips pk-allocviews" role="group" aria-label="Allocation view">'+ALLOC_VIEWS.map(([key,l]) => '<button type="button" class="pk-pill sm" data-action="pk-alloc" data-v="'+key+'" aria-pressed="'+(pf.alloc===key)+'">'+l+'</button>').join("")+'</div>'+
+        '<div class="pk-alloc">'+(allocHTML || '<p class="pk-muted">Nothing to show yet.</p>')+'</div>'+
+        (alloc.length > 10 ? '<button type="button" class="pk-link" data-action="pk-alloc-all">'+(pf.allocAll ? 'Show top 10' : 'Show all '+alloc.length)+'</button>' : '')+
+        (pf.alloc!=="holding" ? '<p class="pk-fine">Sector, asset type and country are MyEverythingApp’s own classification.</p>' : '')+'</section>'+
+    '</div>'+
+  '</div>';
+  if(!chartNote) drawChart(seriesFor(rows, pf.range, pf.chartSym), pf.range);
+}
+
+function niceTicks(min, max, n){
+  const span = max - min || Math.abs(max) || 1, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1,2,2.5,5,10].map(m => m*mag).find(s => span/s <= n) || 10*mag;
+  const lo = Math.floor(min/step)*step, hi = Math.ceil(max/step)*step, out = [];
+  for(let v = lo; v <= hi + step/2; v += step) out.push(v);
+  return out;
+}
+function drawChart(series, range){
+  const box = document.getElementById("pk-chart"), sum = document.getElementById("pk-chart-sum");
+  if(!box) return;
+  if(!series || series.length < 2){ box.innerHTML = '<div class="pk-chart-empty">No price history for this range.</div>'; return; }
+  const first = series[0][1], last = series[series.length-1][1], chg = last - first, pct = first ? chg/first*100 : 0;
+  sum.innerHTML = '<span class="'+tone(chg)+'">'+signed(chg)+' ('+pctTxt(pct)+') over '+range+'</span><span class="pk-muted"> · current shares through the whole range</span>';
+  const W = Math.max(280, box.clientWidth - 1), H = box.clientHeight || 320, padR = 92, padT = 16, padB = 28;
+  const vals = series.map(p => p[1]), ticks = niceTicks(Math.min(...vals), Math.max(...vals), 5);
+  const y0 = ticks[0], y1 = ticks[ticks.length-1];
+  const t0 = series[0][0], t1 = series[series.length-1][0];
+  const X = t => (t - t0) / ((t1 - t0) || 1) * (W - padR - 4) + 2;
+  const Y = v => padT + (1 - (v - y0)/((y1 - y0) || 1)) * (H - padT - padB);
+  const color = chg < 0 ? "var(--pk-down)" : "var(--pk-up)";
+  const line = series.map((p,i) => (i?"L":"M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join(" ");
+  const area = line + " L" + X(t1).toFixed(1) + " " + (H-padB) + " L" + X(t0).toFixed(1) + " " + (H-padB) + " Z";
+  const grid = ticks.map(v => '<line x1="0" x2="'+(W-padR+8)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" class="pk-grid"/><text x="'+(W-padR+14)+'" y="'+(Y(v)+4)+'" class="pk-axis">'+cur(v)+'</text>').join("");
+  const nx = Math.max(2, Math.min(10, Math.floor(W/110))), xl = [];
+  for(let i=0;i<nx;i++){ const t = t0 + (t1-t0)*(i+0.5)/nx, dt = new Date(t); xl.push('<text x="'+X(t)+'" y="'+(H-8)+'" text-anchor="middle" class="pk-axis">'+(range==="5Y"||range==="2Y" ? MON[dt.getMonth()]+" "+String(dt.getFullYear()).slice(2) : MON[dt.getMonth()]+(dt.getDate()>3?" "+dt.getDate():""))+'</text>'); }
+  box.innerHTML = '<svg width="'+W+'" height="'+H+'" role="img" aria-label="Portfolio value over '+range+'">'+
+    '<defs><linearGradient id="pkfill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="'+color+'" stop-opacity=".18"/><stop offset="1" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs>'+
+    grid + '<path d="'+area+'" fill="url(#pkfill)"/><path d="'+line+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round"/>'+ xl.join("") +
+    '<line id="pk-hover-line" class="pk-hover" x1="0" x2="0" y1="'+padT+'" y2="'+(H-padB)+'" visibility="hidden"/><circle id="pk-hover-dot" r="4" fill="'+color+'" visibility="hidden"/></svg>'+
+    '<div class="pk-tip" id="pk-tip" hidden></div>';
+  const svg = box.querySelector("svg"), tip = document.getElementById("pk-tip"), hl = document.getElementById("pk-hover-line"), hd = document.getElementById("pk-hover-dot");
+  svg.addEventListener("pointermove", e => {
+    const rect = svg.getBoundingClientRect(), x = e.clientX - rect.left;
+    let best = 0, bd = Infinity; series.forEach((p,i) => { const dd = Math.abs(X(p[0]) - x); if(dd < bd){ bd = dd; best = i; } });
+    const p = series[best], px = X(p[0]), py = Y(p[1]);
+    hl.setAttribute("x1", px); hl.setAttribute("x2", px); hl.setAttribute("visibility", "visible");
+    hd.setAttribute("cx", px); hd.setAttribute("cy", py); hd.setAttribute("visibility", "visible");
+    const dt = new Date(p[0]); tip.hidden = false; tip.innerHTML = '<b>'+cur(p[1])+'</b><span>'+dt.getDate()+' '+MON[dt.getMonth()]+' '+dt.getFullYear()+'</span>';
+    tip.style.left = Math.min(Math.max(px - 70, 0), W - padR - 140) + "px"; tip.style.top = "4px";
+  });
+  svg.addEventListener("pointerleave", () => { tip.hidden = true; hl.setAttribute("visibility","hidden"); hd.setAttribute("visibility","hidden"); });
+}
+let resizeT; window.addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(() => { if(route()==="finance") render(); }, 200); });
+
+function openAddHolding(){
+  overlayRoot.innerHTML = '<div class="overlay" data-action="close-settings-bg"><form class="sheet pek" id="holding-form" role="dialog" aria-modal="true" aria-labelledby="ah-h" autocomplete="off" style="gap:14px">'+
+    '<div class="pk-row between"><h2 id="ah-h">Add holding to '+(state.pf.active==="trading"?"Trading":"Investment")+'</h2><button class="iconbtn" type="button" data-action="close-settings" aria-label="Close">'+ICON_X+'</button></div>'+
+    '<label class="field"><span class="pk-label">Symbol</span><input type="text" id="ah-sym" placeholder="e.g. AAPL" required></label>'+
+    '<label class="field"><span class="pk-label">Name (optional)</span><input type="text" id="ah-name" placeholder="Filled in from the price source when it can be"></label>'+
+    '<div class="pk-row"><label class="field" style="flex:1"><span class="pk-label">Shares</span><input type="number" id="ah-shares" step="any" min="0" required></label>'+
+    '<label class="field" style="flex:1"><span class="pk-label">Avg cost (USD)</span><input type="number" id="ah-avg" step="any" min="0" required></label></div>'+
+    '<p class="pk-fine" style="margin:0">If you already hold this symbol, the shares are added and the average cost is recalculated.</p>'+
+    '<button class="pk-btn" type="submit">Add holding</button></form></div>';
+  document.getElementById("ah-sym").focus();
+}
+
+function todayPortfolioCard(){
+  const rows = (state.pf.portfolios.investment||[]).map(rowCalc), t = pfTotals(rows);
+  return '<div class="card" style="display:flex;flex-direction:column;gap:14px">'+
+    '<div class="row between"><span class="label">PekFinance · Investment portfolio</span><a class="btn small ghost" href="#finance">Open portfolio</a></div>'+
+    '<div class="stats">'+
+      '<div class="stat"><span class="muted" style="font-size:.85rem">Total value</span><span class="v num">'+usd(t.value)+'</span></div>'+
+      '<div class="stat"><span class="muted" style="font-size:.85rem">1D change</span><span class="v num '+(t.day>=0?'pos':'neg')+'">'+signedUsd(t.day)+'</span><span class="muted num" style="font-size:.8rem">'+pctTxt(t.dayPct)+'</span></div>'+
+      '<div class="stat"><span class="muted" style="font-size:.85rem">Total gain</span><span class="v num '+(t.gain>=0?'pos':'neg')+'">'+signedUsd(t.gain)+'</span><span class="muted num" style="font-size:.8rem">'+pctTxt(t.gainPct)+'</span></div>'+
+    '</div>'+
+    '<div class="muted" style="font-size:.8rem">'+(srcKind()==="snapshot" ? 'Prices from your screenshot' : feed.status==="error" ? 'Last known prices' : 'Live prices')+'</div>'+
+  '</div>';
+}
 
 /* ---------- icons ---------- */
 const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
@@ -586,7 +1022,6 @@ function renderToday(){
   const open = state.todos.filter(x=>!x.done).sort(byDue);
   const p = open.filter(x=>x.list==="personal"), w = open.filter(x=>x.list==="work");
   const todoLi = x => '<li>'+checkBtn(false,"toggle-todo",'data-id="'+x.id+'"',"Complete "+x.text)+'<span class="t">'+esc(x.text)+'</span>'+dueTag(x.due)+'</li>';
-  const ym = t.slice(0,7), mt = monthTotals(ym);
 
   view.innerHTML = '<div class="page">'+
     '<div class="page-head"><div><h1>'+DOW_LONG[di]+', '+d+' '+MON_LONG[m-1]+'</h1>'+
@@ -600,14 +1035,7 @@ function renderToday(){
           (w.length?'<ul class="mini-list" style="margin-top:8px">'+w.slice(0,3).map(todoLi).join("")+'</ul>':'<p class="muted" style="margin:6px 0 0">All clear.</p>')+'</div>'+
       '</div>'+
     '</div>'+
-    '<div class="card" style="display:flex;flex-direction:column;gap:14px">'+
-      '<div class="row between"><span class="label">PekFinance · '+monthLabel(ym)+'</span><a class="btn small ghost" href="#finance">Open finance</a></div>'+
-      '<div class="stats">'+
-        '<div class="stat"><span class="muted" style="font-size:.85rem">Income</span><span class="v num">'+money(mt.inc)+'</span></div>'+
-        '<div class="stat"><span class="muted" style="font-size:.85rem">Spent</span><span class="v num">'+money(mt.exp)+'</span></div>'+
-        '<div class="stat"><span class="muted" style="font-size:.85rem">Net</span><span class="v num '+(mt.net>=0?'pos':'neg')+'">'+money(mt.net)+'</span></div>'+
-      '</div>'+
-    '</div>'+
+    todayPortfolioCard()+
   '</div>';
 }
 
@@ -772,67 +1200,6 @@ function renderTodo(){
   '</div>';
 }
 
-const PEK_LINKS = [
-  ["", "Markets", "Indices, movers, FX and market news"],
-  ["portfolio", "Portfolio", "Investment and Trading holdings, P&L, allocation, AI digest"],
-  ["watchlist", "Watchlists", "Your named lists with live prices"],
-  ["alerts", "Alerts", "Price and daily-move alerts"],
-  ["news", "News", "Top stories and news on your holdings"],
-  ["compare", "Compare", "Up to 5 tickers side by side"]
-];
-function pekBase(){ const u = (state.settings.financeUrl || "").trim().replace(/\/+$/, ""); return /^https?:\/\/[^\s]+$/i.test(u) ? u : ""; }
-function investCardHTML(){
-  const base = pekBase();
-  if(!base) return '<div class="card invest"><div class="row between"><div><h2 style="text-transform:uppercase">ThePekFinance</h2>'+
-    '<p class="muted" style="margin:4px 0 0">Markets, portfolios, watchlists and alerts live in your ThePekFinance app.</p></div></div>'+
-    '<div class="empty" style="margin-top:14px">Add ThePekFinance’s web address in Settings to open it from here.<div style="margin-top:10px"><button class="btn small primary" type="button" data-action="open-settings">Add address</button></div></div></div>';
-  return '<div class="card invest"><div class="row between"><div><h2 style="text-transform:uppercase">ThePekFinance</h2>'+
-    '<p class="muted mono" style="margin:4px 0 0;font-size:.78rem;overflow-wrap:anywhere">'+esc(base.replace(/^https?:\/\//,""))+'</p></div>'+
-    '<a class="btn primary" href="'+esc(base)+'/portfolio" target="_blank" rel="noopener">Open portfolio ↗</a></div>'+
-    '<div class="pek-links">'+PEK_LINKS.map(([path,name,desc])=>'<a href="'+esc(base+(path?"/"+path:"/"))+'" target="_blank" rel="noopener"><b>'+name+' ↗</b><span>'+desc+'</span></a>').join("")+'</div>'+
-    '<p class="muted" style="margin:12px 0 0;font-size:.8rem">Opens in a new tab. Sign in there with your ThePekFinance account.</p></div>';
-}
-
-function renderFinance(){
-  const t = todayISO();
-  if(!state.ui.month) state.ui.month = t.slice(0,7);
-  const ym = state.ui.month, mt = monthTotals(ym), txs = monthTx(ym).sort((a,b)=>a.date<b.date?1:a.date>b.date?-1:0);
-  const cats = {}; txs.filter(x=>x.type==="expense").forEach(x=>cats[x.category]=(cats[x.category]||0)+x.amount);
-  const catRows = Object.entries(cats).sort((a,b)=>b[1]-a[1]); const max = catRows.length?catRows[0][1]:1;
-  const type = state.ui.txType, catOpts = (type==="income"?INC_CATS:EXP_CATS).map(c=>'<option>'+esc(c)+'</option>').join("");
-  const prevYm = shiftMonth(ym,-1), prev = monthTotals(prevYm);
-
-  view.innerHTML = '<div class="page">'+
-    '<div class="page-head"><div><h1>PekFinance</h1><p class="muted">Investments in ThePekFinance, everyday budget here.</p></div></div>'+
-    investCardHTML()+
-    '<div class="page-head" style="margin-top:8px"><div><h2 style="font-size:1.6rem;text-transform:uppercase">Budget</h2><p class="muted">Income and spending by month.</p></div>'+
-      '<div class="row"><button class="iconbtn" type="button" data-action="month-prev" aria-label="Previous month">'+ICON_L+'</button>'+
-      '<b style="min-width:9.5em;text-align:center">'+monthLabel(ym)+'</b>'+
-      '<button class="iconbtn" type="button" data-action="month-next" aria-label="Next month">'+ICON_R+'</button></div></div>'+
-    '<div class="card"><div class="stats">'+
-      '<div class="stat"><span class="label">Income</span><span class="v num">'+money(mt.inc)+'</span></div>'+
-      '<div class="stat"><span class="label">Spent</span><span class="v num">'+money(mt.exp)+'</span>'+(prev.exp?'<span class="muted num" style="font-size:.8rem">'+money(prev.exp)+' in '+MON[Number(prevYm.slice(5))-1]+'</span>':'')+'</div>'+
-      '<div class="stat"><span class="label">Net</span><span class="v num '+(mt.net>=0?'pos':'neg')+'">'+money(mt.net)+'</span>'+(mt.inc?'<span class="muted num" style="font-size:.8rem">'+Math.round(mt.net/mt.inc*100)+'% saved</span>':'')+'</div>'+
-    '</div></div>'+
-    '<form class="card fin-form" id="tx-form" autocomplete="off">'+
-      '<div class="seg" role="group" aria-label="Type"><button type="button" data-action="tx-type" data-type="expense" aria-pressed="'+(type==="expense")+'">Expense</button><button type="button" data-action="tx-type" data-type="income" aria-pressed="'+(type==="income")+'">Income</button></div>'+
-      '<input type="number" id="tx-amount" step="0.01" min="0" placeholder="Amount" aria-label="Amount" required>'+
-      '<select id="tx-cat" aria-label="Category">'+catOpts+'</select>'+
-      '<input type="text" id="tx-note" placeholder="Note (optional)" aria-label="Note">'+
-      '<input type="date" id="tx-date" value="'+(ym===t.slice(0,7)?t:ym+"-01")+'" aria-label="Date" required>'+
-      '<button class="btn primary" type="submit">Add</button>'+
-    '</form>'+
-    '<div class="grid">'+
-      '<div class="card"><span class="label">Spending by category</span><div class="bars" style="margin-top:14px">'+
-        (catRows.length?catRows.map(([c,v])=>'<div class="bar-row"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(c)+'</span><div class="bar-track"><div class="bar-fill" style="width:'+(v/max*100)+'%"></div></div><span class="num" style="text-align:right">'+money(v)+'</span></div>').join(""):'<div class="empty">No spending recorded this month.</div>')+
-      '</div></div>'+
-      '<div class="card"><span class="label">Transactions · '+txs.length+'</span><div class="tx-wrap" style="margin-top:8px">'+
-        (txs.length?'<table class="tx-table"><tbody>'+txs.map(x=>'<tr><td class="num muted" style="white-space:nowrap">'+shortDate(x.date)+'</td><td><div>'+esc(x.note||x.category)+(x.sample?' <span class="pill sample">Example</span>':'')+'</div><div class="muted" style="font-size:.8rem">'+esc(x.category)+'</div></td><td class="amt num" style="color:'+(x.type==="income"?"var(--good)":"var(--ink)")+'">'+(x.type==="income"?"+":"−")+money(x.amount)+'</td><td style="width:32px"><button class="iconbtn" type="button" data-action="del-tx" data-id="'+x.id+'" aria-label="Delete transaction">'+ICON_X+'</button></td></tr>').join("")+'</tbody></table>':'<div class="empty">No transactions. Add one above.</div>')+
-      '</div></div>'+
-    '</div>'+
-  '</div>';
-}
-
 /* ---------- settings ---------- */
 const overlayRoot = document.getElementById("overlay-root");
 function openSettings(){
@@ -841,8 +1208,9 @@ function openSettings(){
     '<div class="row between"><h2 id="set-h">Settings</h2><button class="iconbtn" type="button" data-action="close-settings" aria-label="Close">'+ICON_X+'</button></div>'+
     '<label class="field"><span class="label">Race name</span><input type="text" id="set-race-name" value="'+esc(s.raceName)+'"></label>'+
     '<label class="field"><span class="label">Race date</span><input type="date" id="set-race-date" value="'+s.raceDate+'"><span class="muted" style="font-size:.8rem">The 26-week plan counts back from this date (Sunday of week 26).</span></label>'+
-    '<label class="field"><span class="label">ThePekFinance address</span><input type="url" id="set-finance-url" placeholder="https://your-app.vercel.app" value="'+esc(s.financeUrl||"")+'"><span class="muted" style="font-size:.8rem">The web address of your deployed ThePekFinance app.</span></label>'+
-    '<label class="field"><span class="label">Budget currency</span><select id="set-currency">'+Object.entries(CURRENCIES).map(([k,v])=>'<option value="'+k+'"'+(k===s.currency?' selected':'')+'>'+v+'</option>').join("")+'</select></label>'+
+    '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:12px"><span class="label">PekFinance prices</span>'+
+    '<label class="field"><span class="label">ThePekFinance address</span><input type="url" id="set-finance-url" placeholder="https://your-app.vercel.app" value="'+esc(s.financeUrl||"")+'"><span class="muted" style="font-size:.8rem">Live quotes, price history and USD/AUD from your ThePekFinance /api. It must allow requests from this site (CORS).</span></label>'+
+    '<label class="field"><span class="label">Finnhub API key (optional)</span><input type="password" id="set-finnhub" autocomplete="off" value="'+esc(s.finnhubKey||"")+'"><span class="muted" style="font-size:.8rem">Adds real-time US trades. Stored only in this browser.</span></label></div>'+
     '<button class="btn primary" type="submit">Save settings</button>'+
     '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">'+
       '<span class="label">Your data</span><p class="muted" style="margin:0;font-size:.85rem">Everything is saved in this browser only. Export a backup before switching devices.</p>'+
@@ -865,7 +1233,7 @@ function toast(msg){
 const ROUTES = {today:renderToday, training:renderTraining, todo:renderTodo, finance:renderFinance};
 function route(){ return (location.hash||"").slice(1) in ROUTES ? location.hash.slice(1) : "today"; }
 function render(){
-  const r = route(); ROUTES[r]();
+  const r = route(); document.body.dataset.route = r; ROUTES[r]();
   document.querySelectorAll(".nav a").forEach(a => a.getAttribute("data-route")===r ? a.setAttribute("aria-current","page") : a.removeAttribute("aria-current"));
 }
 window.addEventListener("hashchange", () => { render(); window.scrollTo(0,0); });
@@ -890,22 +1258,31 @@ document.addEventListener("click", e => {
     case "cancel-edit": state.ui.editTodo = null; render(); break;
     case "del-todo": state.todos = state.todos.filter(t=>t.id!==el.dataset.id); save("todos"); render(); toast("Task deleted"); break;
     case "clear-done": state.todos = state.todos.filter(t=>!(t.done && t.list===state.ui.todoList)); save("todos"); render(); toast("Completed tasks cleared"); break;
-    case "month-prev": state.ui.month = shiftMonth(state.ui.month,-1); render(); break;
-    case "month-next": state.ui.month = shiftMonth(state.ui.month,1); render(); break;
-    case "tx-type": state.ui.txType = el.dataset.type; render(); break;
-    case "del-tx": state.tx = state.tx.filter(t=>t.id!==el.dataset.id); save("tx"); render(); toast("Transaction deleted"); break;
+    case "pk-portfolio": state.pf.active = el.dataset.id; state.ui.editHolding = null; save("pf"); render(); break;
+    case "pk-ccy": state.pf.ccy = el.dataset.c; save("pf"); render(); break;
+    case "pk-period": state.pf.period = el.dataset.p; save("pf"); render(); break;
+    case "pk-range": state.pf.range = el.dataset.r; save("pf"); render(); break;
+    case "pk-alloc": state.pf.alloc = el.dataset.v; state.pf.allocAll = false; save("pf"); render(); break;
+    case "pk-alloc-all": state.pf.allocAll = !state.pf.allocAll; save("pf"); render(); break;
+    case "pk-sort": { const k = el.dataset.k, s = state.pf.sort; if(s.k===k) s.d = -s.d; else { s.k = k; s.d = k==="symbol" ? 1 : -1; } save("pf"); render(); break; }
+    case "pk-edit": state.ui.editHolding = el.dataset.id; render(); { const i = document.getElementById("he-shares"); if(i) i.focus(); } break;
+    case "pk-cancel-edit": state.ui.editHolding = null; render(); break;
+    case "pk-delete":
+      if(!resetArmed){ resetArmed = true; el.textContent = "Tap again to delete"; setTimeout(()=>{ resetArmed=false; const b=document.getElementById("pk-del-btn"); if(b) b.textContent="Delete"; }, 4000); break; }
+      resetArmed = false; state.pf.portfolios[state.pf.active] = pfHoldings().filter(h=>h.id!==el.dataset.id); state.ui.editHolding = null; save("pf"); render(); toast("Holding deleted"); break;
+    case "pk-add": openAddHolding(); break;
     case "open-settings": openSettings(); break;
     case "close-settings": case "close-settings-bg": closeSettings(); break;
     case "export": {
-      const data = JSON.stringify({app:"MyEverythingApp", version:1, exported:new Date().toISOString(), settings:state.settings, training:state.training, todos:state.todos, tx:state.tx}, null, 2);
+      const data = JSON.stringify({app:"MyEverythingApp", version:1, exported:new Date().toISOString(), settings:state.settings, training:state.training, todos:state.todos, pf:state.pf}, null, 2);
       try{ const url = URL.createObjectURL(new Blob([data],{type:"application/json"})); const l = document.createElement("a"); l.href=url; l.download="myeverythingapp-backup-"+todayISO()+".json"; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); toast("Backup exported"); }
       catch(err){ toast("Export isn’t available here"); }
       break;
     }
-    case "clear-samples": state.todos = state.todos.filter(t=>!t.sample); state.tx = state.tx.filter(t=>!t.sample); save("todos"); save("tx"); closeSettings(); render(); toast("Example items removed"); break;
+    case "clear-samples": state.todos = state.todos.filter(t=>!t.sample); save("todos"); closeSettings(); render(); toast("Example items removed"); break;
     case "reset-all":
       if(!resetArmed){ resetArmed = true; el.textContent = "Tap again to erase all data"; setTimeout(()=>{ resetArmed=false; const b=document.getElementById("reset-btn"); if(b) b.textContent="Reset everything"; }, 4000); break; }
-      resetArmed = false; state.training = {done:{}, gear:{}}; state.todos = []; state.tx = []; save("training"); save("todos"); save("tx"); closeSettings(); render(); toast("All data erased"); break;
+      resetArmed = false; state.training = {done:{}, gear:{}}; state.todos = []; state.pf.portfolios = {investment:[], trading:[]}; save("training"); save("todos"); save("pf"); closeSettings(); render(); toast("All data erased"); break;
   }
 });
 
@@ -923,28 +1300,40 @@ document.addEventListener("submit", e => {
     const text = document.getElementById("todo-text").value.trim(); if(!text) return;
     state.todos.push({id:uid(), list:state.ui.todoList, text, due:document.getElementById("todo-due").value, done:false, created:Date.now()});
     save("todos"); render(); document.getElementById("todo-text").focus();
-  } else if(f.id==="tx-form"){
-    const amount = parseFloat(document.getElementById("tx-amount").value); if(!(amount>0)) return;
-    const date = document.getElementById("tx-date").value || todayISO();
-    state.tx.push({id:uid(), type:state.ui.txType, amount:Math.round(amount*100)/100, category:document.getElementById("tx-cat").value, note:document.getElementById("tx-note").value.trim(), date});
-    save("tx"); state.ui.month = date.slice(0,7); render(); toast((state.ui.txType==="income"?"Income":"Expense")+" added");
+  } else if(f.id==="holding-edit-form"){
+    const h = pfHoldings().find(x=>x.id===f.dataset.id), sh = parseFloat(document.getElementById("he-shares").value), av = parseFloat(document.getElementById("he-avg").value);
+    if(!h || !(sh>0) || !(av>=0)) return;
+    h.shares = sh; h.avg = av; state.ui.editHolding = null; save("pf"); render(); toast(h.symbol+" updated");
+  } else if(f.id==="holding-form"){
+    const sym = document.getElementById("ah-sym").value.trim().toUpperCase(), sh = parseFloat(document.getElementById("ah-shares").value), av = parseFloat(document.getElementById("ah-avg").value);
+    if(!/^\^?[A-Z0-9][A-Z0-9.\-=]{0,14}$/.test(sym)){ toast("Enter a ticker like AAPL or D05.SI"); return; }
+    if(!(sh>0) || !(av>=0)) return;
+    const list = pfHoldings(), ex = list.find(x=>x.symbol===sym);
+    if(ex){ ex.avg = (ex.shares*ex.avg + sh*av)/(ex.shares+sh); ex.shares += sh; }
+    else list.push({id:uid(), symbol:sym, name:document.getElementById("ah-name").value.trim(), shares:sh, avg:av, type:"Stock", sector:"Other", country:"Other"});
+    save("pf"); closeSettings(); render(); toast(sym+(ex?" topped up":" added"));
+    if(feed.ws && feed.wsOpen) try{ feed.ws.send(JSON.stringify({type:"subscribe", symbol:sym})); }catch(err){}
+    state.hist = {}; refreshQuotes();
   } else if(f.id==="settings-form"){
     const rd = document.getElementById("set-race-date").value;
     if(rd) state.settings.raceDate = rd;
     state.settings.raceName = document.getElementById("set-race-name").value.trim() || "Ironman 70.3";
-    state.settings.currency = document.getElementById("set-currency").value;
+    const oldSrc = (state.settings.financeUrl||"")+"|"+(state.settings.finnhubKey||"");
     state.settings.financeUrl = document.getElementById("set-finance-url").value.trim();
+    state.settings.finnhubKey = document.getElementById("set-finnhub").value.trim();
+    if(oldSrc !== state.settings.financeUrl+"|"+state.settings.finnhubKey) setTimeout(resetFeed, 0);
     save("settings"); state.ui.week = null; closeSettings(); render(); toast("Settings saved");
   }
 });
 
 document.addEventListener("change", e => {
+  if(e.target.id==="pk-chart-sym"){ state.pf.chartSym = e.target.value; save("pf"); e.target.blur(); render(); return; }
   if(e.target.id!=="import-file" || !e.target.files[0]) return;
   const r = new FileReader();
   r.onload = () => {
     try{
       const d = JSON.parse(r.result); if(d.app!=="MyEverythingApp") throw 0;
-      ["settings","training","todos","tx"].forEach(k=>{ if(d[k]){ state[k]=d[k]; save(k); } });
+      ["settings","training","todos","pf"].forEach(k=>{ if(d[k]){ state[k]=d[k]; save(k); } });
       state.ui.week = null; closeSettings(); render(); toast("Backup imported");
     }catch(err){ toast("That file isn’t a MyEverythingApp backup"); }
   };
@@ -954,9 +1343,11 @@ document.addEventListener("keydown", e => {
   if(e.key!=="Escape") return;
   if(overlayRoot.firstChild) closeSettings();
   else if(state.ui.editTodo){ state.ui.editTodo = null; render(); }
+  else if(state.ui.editHolding){ state.ui.editHolding = null; render(); }
 });
 
 render();
+connectWS(); refreshQuotes();
 
 /* ---------- offline support when hosted (no-op where service workers aren't allowed) ---------- */
 try{ if("serviceWorker" in navigator && location.protocol==="https:" && document.querySelector('link[rel=manifest]')) navigator.serviceWorker.register("sw.js").catch(()=>{}); }catch(e){}
