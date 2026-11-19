@@ -4,7 +4,7 @@ One personal hub with three sections:
 
 - **Training**: the 26-week Ironman 70.3 plan (2 Nov 2026 to race day 2 May 2027, goal 5:29:30), colour-coded by sport like the printed plan. Week, Full plan and Guide views; tests, strength, fuelling, pacing and a gear checklist.
 - **To Do**: separate Personal and Work lists with due dates.
-- **PekFinance**: investment portfolio tracker styled after ThePekFinance (one investment portfolio, 37 holdings, USD/AUD, period gains, value-over-time chart, sortable holdings, allocation). Prices come from ThePekFinance's `/api` (quotes, histories, FX; set its address in Settings and allow this site's origin in its CORS config) and optionally a Finnhub key for real-time US trades. Without either it shows the prices from the 18 Nov screenshot.
+- **PekFinance**: investment portfolio tracker styled after ThePekFinance (one investment portfolio, 37 holdings, USD/AUD, period gains, value-over-time chart, sortable holdings, allocation). Prices come from ThePekFinance's `/api` (quotes, histories, FX; defaults to https://thepekfinance.vercel.app, which allows this site via CORS) and optionally a Finnhub key for real-time US trades. Without either it shows the prices from the 18 Nov screenshot.
 
 ## Run locally
 

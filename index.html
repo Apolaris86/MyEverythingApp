@@ -417,6 +417,8 @@ if(state.settings.planVersion !== 2){
   store.set("settings", state.settings); store.set("training", state.training);
 }
 if(!state.training.gear) state.training.gear = {};
+// Default price source: the deployed ThePekFinance API (CORS allows this site).
+if(!state.settings.financeUrlSet){ state.settings.financeUrl = state.settings.financeUrl || "https://thepekfinance.vercel.app"; state.settings.financeUrlSet = true; store.set("settings", state.settings); }
 if(!state.todos){ state.todos = sampleTodos(); store.set("todos", state.todos); }
 const save = k => store.set(k, state[k]);
 
