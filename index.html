@@ -100,7 +100,7 @@ main{min-width:0;padding-block:28px 48px;padding-left:max(16px, env(safe-area-in
 .btn.danger{color:var(--bad)}
 .iconbtn{border:0;background:none;color:var(--muted);width:32px;height:32px;border-radius:8px;display:grid;place-items:center}
 .iconbtn:hover{background:var(--surface-2);color:var(--ink)}
-input[type=text],input[type=number],input[type=date],input[type=month],select{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 10px;min-width:0}
+input[type=text],input[type=url],input[type=number],input[type=date],input[type=month],select{border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 10px;min-width:0}
 input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
 .seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
 .seg button{border:0;background:none;padding:6px 14px;border-radius:8px;font-weight:500;color:var(--muted)}
@@ -264,6 +264,13 @@ details.more summary::-webkit-details-marker{display:none}
 .tx-table .amt{text-align:right;white-space:nowrap;font-weight:600}
 .tx-wrap{overflow-x:auto}
 @media (max-width:560px){.bar-row{grid-template-columns:90px minmax(0,1fr) 76px}.stats{grid-template-columns:1fr 1fr 1fr}.stat .v{font-size:1.15rem}}
+
+/* ThePekFinance launcher */
+.pek-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:14px}
+.pek-links a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;text-decoration:none;color:var(--ink);background:var(--bg)}
+.pek-links a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.pek-links b{font:700 1.1rem var(--f-head);text-transform:uppercase;letter-spacing:.02em}
+.pek-links span{font-size:.8rem;color:var(--muted)}
 
 /* Settings overlay */
 .overlay{position:fixed;inset:0;background:rgba(10,14,22,.5);display:grid;place-items:center;z-index:50;padding:16px}
@@ -765,6 +772,27 @@ function renderTodo(){
   '</div>';
 }
 
+const PEK_LINKS = [
+  ["", "Markets", "Indices, movers, FX and market news"],
+  ["portfolio", "Portfolio", "Investment and Trading holdings, P&L, allocation, AI digest"],
+  ["watchlist", "Watchlists", "Your named lists with live prices"],
+  ["alerts", "Alerts", "Price and daily-move alerts"],
+  ["news", "News", "Top stories and news on your holdings"],
+  ["compare", "Compare", "Up to 5 tickers side by side"]
+];
+function pekBase(){ const u = (state.settings.financeUrl || "").trim().replace(/\/+$/, ""); return /^https?:\/\/[^\s]+$/i.test(u) ? u : ""; }
+function investCardHTML(){
+  const base = pekBase();
+  if(!base) return '<div class="card invest"><div class="row between"><div><h2 style="text-transform:uppercase">ThePekFinance</h2>'+
+    '<p class="muted" style="margin:4px 0 0">Markets, portfolios, watchlists and alerts live in your ThePekFinance app.</p></div></div>'+
+    '<div class="empty" style="margin-top:14px">Add ThePekFinance’s web address in Settings to open it from here.<div style="margin-top:10px"><button class="btn small primary" type="button" data-action="open-settings">Add address</button></div></div></div>';
+  return '<div class="card invest"><div class="row between"><div><h2 style="text-transform:uppercase">ThePekFinance</h2>'+
+    '<p class="muted mono" style="margin:4px 0 0;font-size:.78rem;overflow-wrap:anywhere">'+esc(base.replace(/^https?:\/\//,""))+'</p></div>'+
+    '<a class="btn primary" href="'+esc(base)+'/portfolio" target="_blank" rel="noopener">Open portfolio ↗</a></div>'+
+    '<div class="pek-links">'+PEK_LINKS.map(([path,name,desc])=>'<a href="'+esc(base+(path?"/"+path:"/"))+'" target="_blank" rel="noopener"><b>'+name+' ↗</b><span>'+desc+'</span></a>').join("")+'</div>'+
+    '<p class="muted" style="margin:12px 0 0;font-size:.8rem">Opens in a new tab. Sign in there with your ThePekFinance account.</p></div>';
+}
+
 function renderFinance(){
   const t = todayISO();
   if(!state.ui.month) state.ui.month = t.slice(0,7);
@@ -775,7 +803,9 @@ function renderFinance(){
   const prevYm = shiftMonth(ym,-1), prev = monthTotals(prevYm);
 
   view.innerHTML = '<div class="page">'+
-    '<div class="page-head"><div><h1>PekFinance</h1><p class="muted">Income and spending by month.</p></div>'+
+    '<div class="page-head"><div><h1>PekFinance</h1><p class="muted">Investments in ThePekFinance, everyday budget here.</p></div></div>'+
+    investCardHTML()+
+    '<div class="page-head" style="margin-top:8px"><div><h2 style="font-size:1.6rem;text-transform:uppercase">Budget</h2><p class="muted">Income and spending by month.</p></div>'+
       '<div class="row"><button class="iconbtn" type="button" data-action="month-prev" aria-label="Previous month">'+ICON_L+'</button>'+
       '<b style="min-width:9.5em;text-align:center">'+monthLabel(ym)+'</b>'+
       '<button class="iconbtn" type="button" data-action="month-next" aria-label="Next month">'+ICON_R+'</button></div></div>'+
@@ -811,7 +841,8 @@ function openSettings(){
     '<div class="row between"><h2 id="set-h">Settings</h2><button class="iconbtn" type="button" data-action="close-settings" aria-label="Close">'+ICON_X+'</button></div>'+
     '<label class="field"><span class="label">Race name</span><input type="text" id="set-race-name" value="'+esc(s.raceName)+'"></label>'+
     '<label class="field"><span class="label">Race date</span><input type="date" id="set-race-date" value="'+s.raceDate+'"><span class="muted" style="font-size:.8rem">The 26-week plan counts back from this date (Sunday of week 26).</span></label>'+
-    '<label class="field"><span class="label">Currency</span><select id="set-currency">'+Object.entries(CURRENCIES).map(([k,v])=>'<option value="'+k+'"'+(k===s.currency?' selected':'')+'>'+v+'</option>').join("")+'</select></label>'+
+    '<label class="field"><span class="label">ThePekFinance address</span><input type="url" id="set-finance-url" placeholder="https://your-app.vercel.app" value="'+esc(s.financeUrl||"")+'"><span class="muted" style="font-size:.8rem">The web address of your deployed ThePekFinance app.</span></label>'+
+    '<label class="field"><span class="label">Budget currency</span><select id="set-currency">'+Object.entries(CURRENCIES).map(([k,v])=>'<option value="'+k+'"'+(k===s.currency?' selected':'')+'>'+v+'</option>').join("")+'</select></label>'+
     '<button class="btn primary" type="submit">Save settings</button>'+
     '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">'+
       '<span class="label">Your data</span><p class="muted" style="margin:0;font-size:.85rem">Everything is saved in this browser only. Export a backup before switching devices.</p>'+
@@ -902,6 +933,7 @@ document.addEventListener("submit", e => {
     if(rd) state.settings.raceDate = rd;
     state.settings.raceName = document.getElementById("set-race-name").value.trim() || "Ironman 70.3";
     state.settings.currency = document.getElementById("set-currency").value;
+    state.settings.financeUrl = document.getElementById("set-finance-url").value.trim();
     save("settings"); state.ui.week = null; closeSettings(); render(); toast("Settings saved");
   }
 });

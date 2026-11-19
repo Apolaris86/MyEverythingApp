@@ -4,7 +4,7 @@ One personal hub with three sections:
 
 - **Training**: the 26-week Ironman 70.3 plan (2 Nov 2026 to race day 2 May 2027, goal 5:29:30), colour-coded by sport like the printed plan. Week, Full plan and Guide views; tests, strength, fuelling, pacing and a gear checklist.
 - **To Do**: separate Personal and Work lists with due dates.
-- **PekFinance**: monthly income/expenses, categories, net and savings rate. Placeholder until the existing App_Finance project is merged in.
+- **PekFinance**: launcher for the separate ThePekFinance app (address set in Settings) plus a monthly budget tracker (income, expenses, categories, savings rate).
 
 ## Run locally
 
