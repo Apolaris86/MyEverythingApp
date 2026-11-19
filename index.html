@@ -314,9 +314,10 @@ body[data-route="finance"]{background:var(--pk-bg)}
 .pk-axis{fill:var(--pk-muted);font:400 11px var(--pk-font)}
 .pk-hover{stroke:var(--pk-muted);stroke-dasharray:3 3}
 .pk-tip{position:absolute;background:var(--pk-bg);border:1px solid var(--pk-line);border-radius:8px;padding:6px 10px;font-size:.8rem;display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(0,0,0,.12);pointer-events:none;min-width:140px}
-.pk-bottom{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(260px,1fr);gap:36px;align-items:start}
-.pk-bottom > section{display:flex;flex-direction:column;gap:14px;min-width:0}
-@media (max-width:1440px){.pk-bottom{grid-template-columns:minmax(0,1fr)}.pk-bottom > section:last-child{max-width:640px}}
+.pk-charts{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(250px,1fr);gap:36px;align-items:start}
+.pk-charts > section,.pk-holdings{display:flex;flex-direction:column;gap:14px;min-width:0}
+.pk-allocsec{border-left:1px solid var(--pk-line);padding-left:32px}
+@media (max-width:1180px){.pk-charts{grid-template-columns:minmax(0,1fr)}.pk-allocsec{border-left:0;padding-left:0;max-width:640px}}
 .pk-tablewrap{border:1px solid var(--pk-line);border-radius:14px;overflow-x:auto}
 .pk-table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:640px}
 .pk-table th{padding:14px 12px;text-align:right;font-weight:500;border-bottom:1px solid var(--pk-line);white-space:nowrap}
@@ -627,7 +628,7 @@ const SNAP_AUD = 403308.75 / 270731.52; // A$ per US$ implied by the screenshot
 
 function seedPortfolio(){
   return {
-    portfolios: { investment: SEED.map(r => ({id:uid(), symbol:r[0], name:r[1], shares:r[2], avg:r[3], type:r[6], sector:r[7], country:r[8]})), trading: [] },
+    portfolios: { investment: SEED.map(r => ({id:uid(), symbol:r[0], name:r[1], shares:r[2], avg:r[3], type:r[6], sector:r[7], country:r[8]})) },
     active:"investment", ccy:"USD", period:"1D", range:"6M", chartSym:"all", sort:{k:"value", d:-1}, alloc:"holding", allocAll:false
   };
 }
@@ -637,6 +638,8 @@ function seedQuotes(){
   return q;
 }
 state.pf = store.get("pf", null) || seedPortfolio();
+// Single investment portfolio: Trading was removed.
+state.pf.portfolios = {investment: state.pf.portfolios.investment || []}; state.pf.active = "investment";
 state.quotes = store.get("quotes", null) || seedQuotes();
 state.fx = store.get("fx", null) || {aud:SNAP_AUD, src:"snapshot"};
 state.hist = {};
@@ -876,8 +879,7 @@ function renderFinance(){
     : hist.err ? 'Couldn’t load price history: '+esc(hist.err)+'.' : '';
 
   view.innerHTML = '<div class="pek">'+
-    '<div class="pk-head"><div><h1>Portfolio</h1><div class="pk-feed">'+feedLine()+'</div></div><button type="button" class="pk-btn" data-action="pk-add">+ Add holding</button></div>'+
-    '<div class="pk-pills" role="group" aria-label="Portfolio">'+[["investment","Investment"],["trading","Trading"]].map(([id,l]) => '<button type="button" class="pk-pill" data-action="pk-portfolio" data-id="'+id+'" aria-pressed="'+(pf.active===id)+'">'+l+'</button>').join("")+'</div>'+
+    '<div class="pk-head"><div><h1>Investment portfolio</h1><div class="pk-feed">'+feedLine()+'</div></div><button type="button" class="pk-btn" data-action="pk-add">+ Add holding</button></div>'+
     '<section class="pk-card">'+
       '<div class="pk-row between"><div><div class="pk-label">Total value</div><div class="pk-total">'+cur(t.value)+'</div><div class="pk-sub">≈ '+cur(t.value, other).replace(/^\$/, other==="USD"?"US$":"$")+'</div></div>'+
         '<div class="pk-seg" role="group" aria-label="Currency">'+["USD","AUD"].map(c => '<button type="button" data-action="pk-ccy" data-c="'+c+'" aria-pressed="'+(pf.ccy===c)+'">'+c+'</button>').join("")+'</div></div>'+
@@ -889,20 +891,20 @@ function renderFinance(){
       '</div>'+
       '<p class="pk-fine">Converted at '+(state.fx.src==="live"?'today’s':'the screenshot’s')+' exchange rate (1 USD = '+state.fx.aud.toFixed(4)+' AUD).'+(pc && pc.partial ? ' Some holdings have no history for this period.' : '')+'</p>'+
     '</section>'+
-    '<section>'+
+    '<div class="pk-charts">'+
+    '<section class="pk-valsec">'+
       '<div class="pk-row between wrap"><div class="pk-row wrap"><h2>Value over time</h2><select id="pk-chart-sym" aria-label="Holding for chart"><option value="all">All holdings</option>'+syms.slice().sort().map(s => '<option value="'+s+'"'+(pf.chartSym===s?' selected':'')+'>'+s+'</option>').join("")+'</select></div>'+
         '<div class="pk-tabs" role="group" aria-label="Chart range">'+RANGES.map(r => '<button type="button" data-action="pk-range" data-r="'+r+'" aria-pressed="'+(pf.range===r)+'">'+r+'</button>').join("")+'</div></div>'+
       '<div class="pk-chart-sum" id="pk-chart-sum"></div>'+
       '<div class="pk-chart" id="pk-chart">'+(chartNote ? '<div class="pk-chart-empty">'+chartNote+'</div>' : '')+'</div>'+
     '</section>'+
-    '<div class="pk-bottom">'+
-      '<section><h2>Holdings</h2>'+(rows.length ? '<div class="pk-tablewrap"><table class="pk-table"><thead><tr>'+head+'</tr></thead><tbody>'+body+'</tbody></table></div>'
-        : '<div class="pk-card pk-empty">No holdings in this portfolio yet. <button type="button" class="pk-link" data-action="pk-add">Add one</button>.</div>')+'</section>'+
-      '<section><h2>Allocation</h2><div class="pk-chips pk-allocviews" role="group" aria-label="Allocation view">'+ALLOC_VIEWS.map(([key,l]) => '<button type="button" class="pk-pill sm" data-action="pk-alloc" data-v="'+key+'" aria-pressed="'+(pf.alloc===key)+'">'+l+'</button>').join("")+'</div>'+
+      '<section class="pk-allocsec"><h2>Allocation</h2><div class="pk-chips pk-allocviews" role="group" aria-label="Allocation view">'+ALLOC_VIEWS.map(([key,l]) => '<button type="button" class="pk-pill sm" data-action="pk-alloc" data-v="'+key+'" aria-pressed="'+(pf.alloc===key)+'">'+l+'</button>').join("")+'</div>'+
         '<div class="pk-alloc">'+(allocHTML || '<p class="pk-muted">Nothing to show yet.</p>')+'</div>'+
         (alloc.length > 10 ? '<button type="button" class="pk-link" data-action="pk-alloc-all">'+(pf.allocAll ? 'Show top 10' : 'Show all '+alloc.length)+'</button>' : '')+
         (pf.alloc!=="holding" ? '<p class="pk-fine">Sector, asset type and country are MyEverythingApp’s own classification.</p>' : '')+'</section>'+
     '</div>'+
+      '<section class="pk-holdings"><h2>Holdings · '+rows.length+'</h2>'+(rows.length ? '<div class="pk-tablewrap"><table class="pk-table"><thead><tr>'+head+'</tr></thead><tbody>'+body+'</tbody></table></div>'
+        : '<div class="pk-card pk-empty">No holdings yet. <button type="button" class="pk-link" data-action="pk-add">Add one</button>.</div>')+'</section>'+
   '</div>';
   if(!chartNote) drawChart(seriesFor(rows, pf.range, pf.chartSym), pf.range);
 }
@@ -953,7 +955,7 @@ let resizeT; window.addEventListener("resize", () => { clearTimeout(resizeT); re
 
 function openAddHolding(){
   overlayRoot.innerHTML = '<div class="overlay" data-action="close-settings-bg"><form class="sheet pek" id="holding-form" role="dialog" aria-modal="true" aria-labelledby="ah-h" autocomplete="off" style="gap:14px">'+
-    '<div class="pk-row between"><h2 id="ah-h">Add holding to '+(state.pf.active==="trading"?"Trading":"Investment")+'</h2><button class="iconbtn" type="button" data-action="close-settings" aria-label="Close">'+ICON_X+'</button></div>'+
+    '<div class="pk-row between"><h2 id="ah-h">Add holding</h2><button class="iconbtn" type="button" data-action="close-settings" aria-label="Close">'+ICON_X+'</button></div>'+
     '<label class="field"><span class="pk-label">Symbol</span><input type="text" id="ah-sym" placeholder="e.g. AAPL" required></label>'+
     '<label class="field"><span class="pk-label">Name (optional)</span><input type="text" id="ah-name" placeholder="Filled in from the price source when it can be"></label>'+
     '<div class="pk-row"><label class="field" style="flex:1"><span class="pk-label">Shares</span><input type="number" id="ah-shares" step="any" min="0" required></label>'+
@@ -1282,7 +1284,7 @@ document.addEventListener("click", e => {
     case "clear-samples": state.todos = state.todos.filter(t=>!t.sample); save("todos"); closeSettings(); render(); toast("Example items removed"); break;
     case "reset-all":
       if(!resetArmed){ resetArmed = true; el.textContent = "Tap again to erase all data"; setTimeout(()=>{ resetArmed=false; const b=document.getElementById("reset-btn"); if(b) b.textContent="Reset everything"; }, 4000); break; }
-      resetArmed = false; state.training = {done:{}, gear:{}}; state.todos = []; state.pf.portfolios = {investment:[], trading:[]}; save("training"); save("todos"); save("pf"); closeSettings(); render(); toast("All data erased"); break;
+      resetArmed = false; state.training = {done:{}, gear:{}}; state.todos = []; state.pf.portfolios = {investment:[]}; save("training"); save("todos"); save("pf"); closeSettings(); render(); toast("All data erased"); break;
   }
 });
 
