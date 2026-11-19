@@ -1,5 +1,5 @@
 // Offline cache for MyEverythingApp. Bump VERSION when you deploy changes.
-const VERSION = "mea-v2";
+const VERSION = "mea-v3";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener("activate", e => {

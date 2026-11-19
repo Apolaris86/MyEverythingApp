@@ -241,6 +241,11 @@ details.more summary::-webkit-details-marker{display:none}
 .todo-list li:last-child{border-bottom:0}
 .todo-list .t{flex:1;min-width:0;overflow-wrap:anywhere}
 .todo-list li.done .t{text-decoration:line-through;color:var(--muted)}
+.todo-list button.t{border:0;background:none;padding:2px 0;text-align:left;font:inherit;color:inherit;cursor:text;border-radius:4px}
+.todo-list button.t:hover{background:var(--surface-2)}
+.todo-list li.editing{background:var(--accent-soft);border-radius:8px;padding:10px}
+.edit-form{flex:1;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 150px 120px auto auto;gap:8px;align-items:center}
+@media (max-width:640px){.edit-form{grid-template-columns:1fr 1fr}.edit-form #edit-text{grid-column:1/-1}}
 .due{font-size:.78rem;color:var(--muted);white-space:nowrap}
 .due.overdue{color:var(--bad);font-weight:600}
 @media (max-width:560px){.todo-form{grid-template-columns:minmax(0,1fr) auto}.todo-form input[type=date]{grid-column:1}}
@@ -531,6 +536,7 @@ function monthLabel(ym){ const [y,m] = ym.split("-").map(Number); return MON_LON
 /* ---------- icons ---------- */
 const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 const ICON_X = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const ICON_EDIT = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
 const ICON_L = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
 const ICON_R = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 const sportLabel = s => ({swim:"Swim",bike:"Bike",run:"Run",strength:"Strength",brick:"Ride + run",race:"Race",rest:"Rest"}[s]);
@@ -730,9 +736,18 @@ function renderTodo(){
   const items = state.todos.filter(x=>x.list===list);
   const open = items.filter(x=>!x.done).sort(byDue), done = items.filter(x=>x.done);
   const cnt = l => state.todos.filter(x=>x.list===l && !x.done).length;
-  const li = x => '<li class="'+(x.done?'done':'')+'">'+checkBtn(x.done,"toggle-todo",'data-id="'+x.id+'"',(x.done?"Reopen ":"Complete ")+x.text)+
-    '<span class="t">'+esc(x.text)+(x.sample?' <span class="pill sample">Example</span>':'')+'</span>'+dueTag(x.due)+
+  const li = x => {
+    if(state.ui.editTodo===x.id) return '<li class="editing"><form class="edit-form" id="todo-edit-form" data-id="'+x.id+'" autocomplete="off">'+
+      '<input type="text" id="edit-text" value="'+esc(x.text)+'" aria-label="Task" required>'+
+      '<input type="date" id="edit-due" value="'+esc(x.due||"")+'" aria-label="Due date (leave empty for none)">'+
+      '<select id="edit-list" aria-label="List"><option value="personal"'+(x.list==="personal"?' selected':'')+'>Personal</option><option value="work"'+(x.list==="work"?' selected':'')+'>Work</option></select>'+
+      '<button class="btn small primary" type="submit">Save</button>'+
+      '<button class="btn small ghost" type="button" data-action="cancel-edit">Cancel</button></form></li>';
+    return '<li class="'+(x.done?'done':'')+'">'+checkBtn(x.done,"toggle-todo",'data-id="'+x.id+'"',(x.done?"Reopen ":"Complete ")+x.text)+
+    '<button type="button" class="t" data-action="edit-todo" data-id="'+x.id+'" title="Edit task">'+esc(x.text)+(x.sample?' <span class="pill sample">Example</span>':'')+'</button>'+dueTag(x.due)+
+    '<button class="iconbtn" type="button" data-action="edit-todo" data-id="'+x.id+'" aria-label="Edit '+esc(x.text)+'">'+ICON_EDIT+'</button>'+
     '<button class="iconbtn" type="button" data-action="del-todo" data-id="'+x.id+'" aria-label="Delete '+esc(x.text)+'">'+ICON_X+'</button></li>';
+  };
 
   view.innerHTML = '<div class="page">'+
     '<div class="page-head"><div><h1>To Do</h1><p class="muted">Two lists, kept apart.</p></div>'+
@@ -838,8 +853,10 @@ document.addEventListener("click", e => {
     case "week-prev": state.ui.week = Math.max(1, state.ui.week-1); render(); break;
     case "week-next": state.ui.week = Math.min(WEEKS, state.ui.week+1); render(); break;
     case "week-now": state.ui.week = planPos(todayISO()).week; render(); break;
-    case "pick-list": state.ui.todoList = el.dataset.list; render(); break;
+    case "pick-list": state.ui.todoList = el.dataset.list; state.ui.editTodo = null; render(); break;
     case "toggle-todo": { const x = state.todos.find(t=>t.id===el.dataset.id); if(x){ x.done=!x.done; save("todos"); render(); } break; }
+    case "edit-todo": state.ui.editTodo = el.dataset.id; render(); { const i = document.getElementById("edit-text"); if(i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); } } break;
+    case "cancel-edit": state.ui.editTodo = null; render(); break;
     case "del-todo": state.todos = state.todos.filter(t=>t.id!==el.dataset.id); save("todos"); render(); toast("Task deleted"); break;
     case "clear-done": state.todos = state.todos.filter(t=>!(t.done && t.list===state.ui.todoList)); save("todos"); render(); toast("Completed tasks cleared"); break;
     case "month-prev": state.ui.month = shiftMonth(state.ui.month,-1); render(); break;
@@ -864,7 +881,14 @@ document.addEventListener("click", e => {
 document.addEventListener("submit", e => {
   e.preventDefault();
   const f = e.target;
-  if(f.id==="todo-form"){
+  if(f.id==="todo-edit-form"){
+    const x = state.todos.find(t=>t.id===f.dataset.id); const text = document.getElementById("edit-text").value.trim();
+    if(!x || !text) return;
+    const newList = document.getElementById("edit-list").value, moved = newList!==x.list;
+    Object.assign(x, {text, due:document.getElementById("edit-due").value, list:newList, sample:false});
+    state.ui.editTodo = null; save("todos"); render();
+    toast(moved ? "Moved to "+(newList==="work"?"Work":"Personal") : "Task updated");
+  } else if(f.id==="todo-form"){
     const text = document.getElementById("todo-text").value.trim(); if(!text) return;
     state.todos.push({id:uid(), list:state.ui.todoList, text, due:document.getElementById("todo-due").value, done:false, created:Date.now()});
     save("todos"); render(); document.getElementById("todo-text").focus();
@@ -894,7 +918,11 @@ document.addEventListener("change", e => {
   };
   r.readAsText(e.target.files[0]);
 });
-document.addEventListener("keydown", e => { if(e.key==="Escape" && overlayRoot.firstChild) closeSettings(); });
+document.addEventListener("keydown", e => {
+  if(e.key!=="Escape") return;
+  if(overlayRoot.firstChild) closeSettings();
+  else if(state.ui.editTodo){ state.ui.editTodo = null; render(); }
+});
 
 render();
 
