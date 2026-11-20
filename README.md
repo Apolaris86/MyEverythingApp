@@ -22,9 +22,11 @@ Static files only (`index.html`, `manifest.json`, `sw.js`, `icon.svg`). Works on
 
 Wrap with Capacitor (`npx cap add ios` / `npx cap add android`) to ship to the App Store and Play Store.
 
-## Data
+## Data and sync
 
-Stored in the browser's localStorage. Use Settings → Export backup to move data between devices. Cloud sync is a later step.
+Every change is saved in the browser first, so the app works offline. Signed in (Settings → Account & sync), to-dos, training ticks, gear, the portfolio and settings sync to Supabase (`app_docs` table, one row per document, Row Level Security so each user sees only their own rows). A device signing in for the first time takes the cloud copy; after that the newest change wins. The Finnhub key never leaves the device.
+
+Set up once: run `supabase/schema.sql` in the Supabase SQL editor, set Auth → URL Configuration → Site URL to `https://apolaris86.github.io/MyEverythingApp/`, create your account in the app, then turn off new sign-ups.
 
 `scripts/build-artifact.sh` builds a body-only copy in `dist/` for previewing as a Claude artifact.
 
