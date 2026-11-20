@@ -352,6 +352,31 @@ body[data-route="finance"]{background:var(--pk-bg)}
 .pk-apct{font-size:.8rem;white-space:nowrap}
 @media (max-width:640px){.pk-total{font-size:2rem}.pk-stats{grid-template-columns:1fr 1fr}.pk-tabs button{padding:8px 9px}}
 
+/* Today: movers, news, calendar */
+.movers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.mv-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.mv-list li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:baseline;font-size:.9rem}
+.mv-sym{font:600 .8rem var(--f-mono)}
+.mv-name{color:var(--muted);font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.news-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px 22px}
+@media (max-width:1180px){.news-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.news-grid{grid-template-columns:minmax(0,1fr)}}
+.news-sec h3{font-size:1rem;text-transform:uppercase;letter-spacing:.03em;border-top:3px solid var(--accent);padding-top:6px}
+.news-sec ol{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:9px;font-size:.88rem}
+.news-sec li span{display:block;font-size:.75rem;margin-top:2px}
+.news-sec a{color:var(--ink);text-decoration:none}
+.news-sec a:hover{color:var(--accent);text-decoration:underline}
+.cal-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.cal-list li{display:grid;grid-template-columns:max-content minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.cal-list li:last-child{border-bottom:0}
+.cal-list li.past{opacity:.55}
+.cal-list li.now .cal-time{color:var(--accent);font-weight:600}
+.cal-time{font-size:.85rem;color:var(--muted);white-space:nowrap;min-width:5.5em}
+.cal-what{display:flex;flex-direction:column;min-width:0}
+.cal-what small{font-size:.78rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill.next{background:var(--accent-soft);color:var(--accent)}
+@media (max-width:420px){.movers{grid-template-columns:1fr}}
+
 /* Sync status */
 .sync-chip{margin:0 12px 6px;font-size:.75rem;color:var(--muted);display:flex;align-items:center;gap:6px}
 .sync-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--rest)}
@@ -983,17 +1008,105 @@ function openAddHolding(){
   document.getElementById("ah-sym").focus();
 }
 
+/* ---------- Today: markets card, news, calendar ---------- */
+function moverLi(r){
+  return '<li><span class="mv-sym">'+esc(r.h.symbol)+'</span><span class="mv-name">'+esc(r.h.name||"")+'</span>'+
+    '<span class="num '+(r.dayPct>0?'pos':r.dayPct<0?'neg':'')+'">'+pctTxt(r.dayPct)+'</span></li>';
+}
 function todayPortfolioCard(){
   const rows = (state.pf.portfolios.investment||[]).map(rowCalc), t = pfTotals(rows);
+  ensureHist("YTD");
+  const ytd = periodChange(rows, "YTD", t);
+  const priced = rows.filter(r => r.dayPct!=null && isFinite(r.dayPct));
+  const up = priced.filter(r => r.dayPct > 0).sort((a,b) => b.dayPct - a.dayPct).slice(0,3);
+  const down = priced.filter(r => r.dayPct < 0).sort((a,b) => a.dayPct - b.dayPct).slice(0,3);
+  const ytdTxt = ytd ? '<span class="v num '+(ytd.chg>=0?'pos':'neg')+'">'+signedUsd(ytd.chg)+'</span><span class="muted num" style="font-size:.8rem">'+pctTxt(ytd.pct)+'</span>'
+    : '<span class="v num muted">'+(srcKind()==="pek" && !(state.hist.YTD && state.hist.YTD.err) ? '…' : '—')+'</span><span class="muted" style="font-size:.8rem">'+(srcKind()==="pek" ? (state.hist.YTD && state.hist.YTD.err ? 'History unavailable' : 'Loading') : 'Needs a price source')+'</span>';
   return '<div class="card" style="display:flex;flex-direction:column;gap:14px">'+
-    '<div class="row between"><span class="label">PekFinance · Investment portfolio</span><a class="btn small ghost" href="#finance">Open portfolio</a></div>'+
-    '<div class="stats">'+
-      '<div class="stat"><span class="muted" style="font-size:.85rem">Total value</span><span class="v num">'+usd(t.value)+'</span></div>'+
+    '<div class="row between"><span class="label">PekFinance · Markets today</span><a class="btn small ghost" href="#finance">Open portfolio</a></div>'+
+    '<div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">'+
       '<div class="stat"><span class="muted" style="font-size:.85rem">1D change</span><span class="v num '+(t.day>=0?'pos':'neg')+'">'+signedUsd(t.day)+'</span><span class="muted num" style="font-size:.8rem">'+pctTxt(t.dayPct)+'</span></div>'+
-      '<div class="stat"><span class="muted" style="font-size:.85rem">Total gain</span><span class="v num '+(t.gain>=0?'pos':'neg')+'">'+signedUsd(t.gain)+'</span><span class="muted num" style="font-size:.8rem">'+pctTxt(t.gainPct)+'</span></div>'+
+      '<div class="stat"><span class="muted" style="font-size:.85rem">YTD change</span>'+ytdTxt+'</div>'+
     '</div>'+
-    '<div class="muted" style="font-size:.8rem">'+(srcKind()==="snapshot" ? 'Prices from your screenshot' : feed.status==="error" ? 'Last known prices' : 'Live prices')+'</div>'+
+    '<div class="movers">'+
+      '<div><h3>Top gainers 1D</h3>'+(up.length ? '<ul class="mv-list">'+up.map(moverLi).join("")+'</ul>' : '<p class="muted" style="margin:6px 0 0">No gainers today.</p>')+'</div>'+
+      '<div><h3>Top losers 1D</h3>'+(down.length ? '<ul class="mv-list">'+down.map(moverLi).join("")+'</ul>' : '<p class="muted" style="margin:6px 0 0">No losers today.</p>')+'</div>'+
+    '</div>'+
+    '<div class="muted" style="font-size:.8rem">'+(srcKind()==="snapshot" ? 'Prices from your screenshot' : feed.status==="error" ? 'Last known prices' : usMarketOpen() ? 'Live prices' : 'Latest close')+'</div>'+
   '</div>';
+}
+
+const NEWS_SECTIONS = [["world","World"],["au","Australia"],["hu","Hungary"],["finance","Finance"],["tech","Technology"]];
+const todayData = { news: store.get("newsCache", null), newsBusy:false, newsErr:"", cal:null, calDay:"", calAt:0, calBusy:false, calErr:"" };
+const relayBase = () => pekBase() && !/thepekfinance/i.test(pekBase()) ? pekBase() : "";
+async function relayGet(path){
+  const r = await fetch(relayBase() + path, {headers:{accept:"application/json"}});
+  const type = r.headers.get("content-type") || "";
+  const body = /json/i.test(type) ? await r.json() : null;
+  if(r.status===404 && !(body && body.error && !/not found/i.test(body.error))) throw new Error("Your price relay needs updating: run npx wrangler deploy in the worker folder");
+  if(!r.ok) throw new Error((body && body.error) || ("Relay answered " + r.status));
+  if(!body) throw new Error("Relay sent something other than data");
+  return body;
+}
+async function loadNews(){
+  if(!relayBase() || todayData.newsBusy || !navigator.onLine) return;
+  if(todayData.news && Date.now() - todayData.news.at < 15*60e3 && !todayData.newsErr) return;
+  if(todayData.newsErr && Date.now() - (todayData.newsTried||0) < 60e3) return;
+  todayData.newsBusy = true; todayData.newsTried = Date.now();
+  try{
+    const data = await relayGet("/api/news?feeds=" + NEWS_SECTIONS.map(s => s[0]).join(",") + "&n=3");
+    todayData.news = {at:Date.now(), data}; todayData.newsErr = ""; store.set("newsCache", todayData.news);
+  }catch(e){ todayData.newsErr = /Failed to fetch|NetworkError|Load failed/i.test(e.message) ? "Couldn’t reach the news source" : e.message; }
+  todayData.newsBusy = false; schedulePaint();
+}
+function newsAge(ms){ if(!ms) return ""; const m = Math.round((Date.now()-ms)/60000); return m < 60 ? m+" min" : m < 1440 ? Math.round(m/60)+" h" : Math.round(m/1440)+" d"; }
+function newsCard(){
+  loadNews();
+  const d = todayData.news && todayData.news.data;
+  let body;
+  if(!relayBase()) body = '<p class="muted" style="margin:0">News comes through your price relay. Set it in Settings → Price source address.</p>';
+  else if(!d) body = '<p class="muted" style="margin:0">'+(todayData.newsErr ? esc(todayData.newsErr) : 'Loading headlines…')+'</p>';
+  else body = '<div class="news-grid">'+NEWS_SECTIONS.map(([k,l]) => '<section class="news-sec"><h3>'+l+'</h3>'+((d[k]||[]).length ? '<ol>'+d[k].map(n =>
+      '<li><a href="'+esc(n.url)+'" target="_blank" rel="noopener">'+esc(n.title)+'</a><span class="muted">'+esc(n.source||"")+(n.published?' · '+newsAge(n.published):'')+'</span></li>').join("")+'</ol>'
+      : '<p class="muted" style="margin:0;font-size:.85rem">No headlines right now.</p>')+'</section>').join("")+'</div>'+
+    (todayData.newsErr ? '<p class="muted" style="margin:0;font-size:.8rem">Showing earlier headlines: '+esc(todayData.newsErr)+'</p>' : '');
+  return '<div class="card" style="display:flex;flex-direction:column;gap:14px">'+
+    '<div class="row between"><span class="label">Latest news</span>'+(d ? '<span class="muted" style="font-size:.8rem">Google News · updated '+newsAge(todayData.news.at)+' ago</span>' : '')+'</div>'+body+'</div>';
+}
+
+async function loadCal(force){
+  const u = (state.settings.calendarUrl || "").trim();
+  if(!u || !relayBase() || todayData.calBusy || !navigator.onLine) return;
+  const day = todayISO();
+  if(!force && todayData.calDay===day && Date.now() - todayData.calAt < 5*60e3) return;
+  todayData.calBusy = true;
+  try{
+    const from = new Date(); from.setHours(0,0,0,0); const to = new Date(from); to.setDate(to.getDate()+1);
+    const list = await relayGet("/api/calendar?url=" + encodeURIComponent(u) + "&from=" + from.getTime() + "&to=" + to.getTime() + "&day=" + day);
+    todayData.cal = list; todayData.calErr = "";
+  }catch(e){ todayData.calErr = /Failed to fetch|NetworkError|Load failed/i.test(e.message) ? "Couldn’t reach your calendar" : e.message; }
+  todayData.calDay = day; todayData.calAt = Date.now(); todayData.calBusy = false; schedulePaint();
+}
+function hm(ms){ return new Date(ms).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+function calendarCard(){
+  loadCal();
+  const configured = !!(state.settings.calendarUrl || "").trim();
+  let body;
+  if(!configured) body = '<p class="muted" style="margin:0">Show today’s Google Calendar events here. In Google Calendar on the web: Settings → your calendar → <b>Integrate calendar</b> → copy <b>Secret address in iCal format</b>, then paste it in Settings here.</p><button class="btn small" type="button" data-action="open-settings" style="align-self:flex-start">Add calendar</button>';
+  else if(!relayBase()) body = '<p class="muted" style="margin:0">The calendar comes through your price relay. Set it in Settings → Price source address.</p>';
+  else if(todayData.calErr && !todayData.cal) body = '<p class="muted" style="margin:0">'+esc(todayData.calErr)+'</p>';
+  else if(!todayData.cal || todayData.calDay!==todayISO()) body = '<p class="muted" style="margin:0">Loading today’s events…</p>';
+  else if(!todayData.cal.length) body = '<p class="muted" style="margin:0">Nothing in your calendar today.</p>';
+  else {
+    const now = Date.now();
+    body = '<ul class="cal-list">'+todayData.cal.map(ev => {
+      const past = !ev.allDay && ev.end && ev.end < now, current = !ev.allDay && ev.start <= now && (!ev.end || ev.end > now);
+      return '<li class="'+(past?'past':'')+(current?' now':'')+'"><span class="cal-time num">'+(ev.allDay ? 'All day' : hm(ev.start)+(ev.end ? '–'+hm(ev.end) : ''))+'</span>'+
+        '<span class="cal-what"><b>'+esc(ev.title)+'</b>'+(ev.location ? '<small class="muted">'+esc(ev.location)+'</small>' : '')+'</span>'+(current?'<span class="pill next">Now</span>':'')+'</li>';
+    }).join("")+'</ul>';
+  }
+  return '<div class="card" style="display:flex;flex-direction:column;gap:12px">'+
+    '<div class="row between"><span class="label">Today’s calendar</span>'+(configured && todayData.cal ? '<span class="pill num">'+todayData.cal.length+' event'+(todayData.cal.length===1?'':'s')+'</span>' : '')+'</div>'+body+'</div>';
 }
 
 /* ---------- cloud sync (Supabase): to-dos, training, portfolio and settings follow your account ---------- */
@@ -1187,7 +1300,8 @@ function renderToday(){
     '<div class="page-head"><div><h1>'+DOW_LONG[di]+', '+d+' '+MON_LONG[m-1]+'</h1>'+
       '<p class="muted">'+planLine+(daysToRace>=0?' · <b class="num" style="color:var(--ink)">'+daysToRace+'</b> days to '+esc(state.settings.raceName):'')+'</p></div></div>'+
     (sync.client && !sync.user ? '<div class="card signin-card"><div><b>Keep your data on every device</b><div class="muted" style="font-size:.85rem">Sign in to sync to-dos, training and your portfolio to your account.</div></div><button class="btn primary small" type="button" data-action="open-settings">Sign in</button></div>' : '')+
-    '<div class="grid">'+sessionHTML+
+    '<div class="grid">'+sessionHTML+calendarCard()+'</div>'+
+    '<div class="grid">'+
       '<div class="card" style="display:flex;flex-direction:column;gap:14px">'+
         '<div class="row between"><span class="label">To do</span><a class="btn small ghost" href="#todo">Open lists</a></div>'+
         '<div><div class="row between"><h3>Personal</h3><span class="pill num">'+p.length+' open</span></div>'+
@@ -1195,8 +1309,9 @@ function renderToday(){
         '<div><div class="row between"><h3>Work</h3><span class="pill num">'+w.length+' open</span></div>'+
           (w.length?'<ul class="mini-list" style="margin-top:8px">'+w.slice(0,3).map(todoLi).join("")+'</ul>':'<p class="muted" style="margin:6px 0 0">All clear.</p>')+'</div>'+
       '</div>'+
+      todayPortfolioCard()+
     '</div>'+
-    todayPortfolioCard()+
+    newsCard()+
   '</div>';
 }
 
@@ -1372,6 +1487,7 @@ function openSettings(){
     '<label class="field"><span class="label">Race date</span><input type="date" id="set-race-date" value="'+s.raceDate+'"><span class="muted" style="font-size:.8rem">The 26-week plan counts back from this date (Sunday of week 26).</span></label>'+
     '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:12px"><span class="label">PekFinance prices</span>'+
     '<label class="field"><span class="label">Price source address</span><input type="url" id="set-finance-url" placeholder="https://your-app.vercel.app" value="'+esc(s.financeUrl||"")+'"><span class="muted" style="font-size:.8rem">Your MyEverythingApp price relay (Cloudflare Worker), or ThePekFinance. Must allow requests from this site.</span></label>'+
+    '<label class="field"><span class="label">Google Calendar secret address (iCal)</span><input type="url" id="set-calendar" placeholder="https://calendar.google.com/calendar/ical/…/basic.ics" value="'+esc(s.calendarUrl||"")+'"><span class="muted" style="font-size:.8rem">Google Calendar on the web → Settings → your calendar → Integrate calendar → Secret address in iCal format. Read-only; keep it private.</span></label>'+
     '<label class="field"><span class="label">Finnhub API key (optional)</span><input type="password" id="set-finnhub" autocomplete="off" value="'+esc(s.finnhubKey||"")+'"><span class="muted" style="font-size:.8rem">Adds real-time US trades. Stored only in this browser.</span></label></div>'+
     '<button class="btn primary" type="submit">Save settings</button>'+
     '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">'+
@@ -1490,6 +1606,8 @@ document.addEventListener("submit", e => {
     const oldSrc = (state.settings.financeUrl||"")+"|"+(state.settings.finnhubKey||"");
     state.settings.financeUrl = document.getElementById("set-finance-url").value.trim();
     state.settings.finnhubKey = document.getElementById("set-finnhub").value.trim();
+    const cal = document.getElementById("set-calendar").value.trim();
+    if(cal !== (state.settings.calendarUrl||"")){ state.settings.calendarUrl = cal; todayData.cal = null; todayData.calErr = ""; todayData.calDay = ""; setTimeout(() => loadCal(true), 0); }
     if(oldSrc !== state.settings.financeUrl+"|"+state.settings.finnhubKey) setTimeout(resetFeed, 0);
     save("settings"); state.ui.week = null; closeSettings(); render(); toast("Settings saved");
   }
