@@ -420,6 +420,8 @@ if(!state.training.gear) state.training.gear = {};
 // Price source: MyEverythingApp's own relay (Cloudflare Worker), set in Settings. Drop the old automatic ThePekFinance default.
 if(state.settings.financeUrlSet && !state.settings.priceSourceV2){ if(state.settings.financeUrl === "https://thepekfinance.vercel.app") state.settings.financeUrl = ""; }
 if(!state.settings.priceSourceV2){ state.settings.priceSourceV2 = true; store.set("settings", state.settings); }
+const DEFAULT_PRICE_SOURCE = "https://myeverythingapp-prices.peknorbert.workers.dev";
+if(!state.settings.priceSourceV3){ if(!state.settings.financeUrl) state.settings.financeUrl = DEFAULT_PRICE_SOURCE; state.settings.priceSourceV3 = true; store.set("settings", state.settings); }
 if(!state.todos){ state.todos = sampleTodos(); store.set("todos", state.todos); }
 const save = k => store.set(k, state[k]);
 

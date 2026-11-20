@@ -39,4 +39,4 @@ npx wrangler login
 npx wrangler deploy
 ```
 
-Paste the printed `https://myeverythingapp-prices.<you>.workers.dev` address into Settings → Price source address.
+Deployed at `https://myeverythingapp-prices.peknorbert.workers.dev`, which the app uses by default (Settings → Price source address).
