@@ -244,6 +244,9 @@ details.more summary::-webkit-details-marker{display:none}
 .todo-list li.done .t{text-decoration:line-through;color:var(--muted)}
 .todo-list button.t{border:0;background:none;padding:2px 0;text-align:left;font:inherit;color:inherit;cursor:text;border-radius:4px}
 .todo-list button.t:hover{background:var(--surface-2)}
+.cal-btn{color:var(--muted);text-decoration:none}
+.cal-btn.added{color:var(--good)}
+.cal-spacer{width:32px;flex:none}
 .todo-list li.editing{background:var(--accent-soft);border-radius:8px;padding:10px}
 .edit-form{flex:1;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 150px 120px auto auto;gap:8px;align-items:center}
 @media (max-width:640px){.edit-form{grid-template-columns:1fr 1fr}.edit-form #edit-text{grid-column:1/-1}}
@@ -1090,23 +1093,25 @@ async function loadCal(force){
 function hm(ms){ return new Date(ms).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
 function calendarCard(){
   loadCal();
+  const todoToday = new Set(state.todos.filter(t => !t.done && t.due===todayISO()).map(t => t.text.trim().toLowerCase()));
+  const events = (todayData.cal || []).filter(ev => !(ev.allDay && todoToday.has((ev.title||"").trim().toLowerCase())));
   const configured = !!(state.settings.calendarUrl || "").trim();
   let body;
   if(!configured) body = '<p class="muted" style="margin:0">Show today’s Google Calendar events here. In Google Calendar on the web: Settings → your calendar → <b>Integrate calendar</b> → copy <b>Secret address in iCal format</b>, then paste it in Settings here.</p><button class="btn small" type="button" data-action="open-settings" style="align-self:flex-start">Add calendar</button>';
   else if(!relayBase()) body = '<p class="muted" style="margin:0">The calendar comes through your price relay. Set it in Settings → Price source address.</p>';
   else if(todayData.calErr && !todayData.cal) body = '<p class="muted" style="margin:0">'+esc(todayData.calErr)+'</p>';
   else if(!todayData.cal || todayData.calDay!==todayISO()) body = '<p class="muted" style="margin:0">Loading today’s events…</p>';
-  else if(!todayData.cal.length) body = '<p class="muted" style="margin:0">Nothing in your calendar today.</p>';
+  else if(!events.length) body = '<p class="muted" style="margin:0">'+(todayData.cal.length ? 'Only today’s to-dos are in your calendar.' : 'Nothing in your calendar today.')+'</p>';
   else {
     const now = Date.now();
-    body = '<ul class="cal-list">'+todayData.cal.map(ev => {
+    body = '<ul class="cal-list">'+events.map(ev => {
       const past = !ev.allDay && ev.end && ev.end < now, current = !ev.allDay && ev.start <= now && (!ev.end || ev.end > now);
       return '<li class="'+(past?'past':'')+(current?' now':'')+'"><span class="cal-time num">'+(ev.allDay ? 'All day' : hm(ev.start)+(ev.end ? '–'+hm(ev.end) : ''))+'</span>'+
         '<span class="cal-what"><b>'+esc(ev.title)+'</b>'+(ev.location ? '<small class="muted">'+esc(ev.location)+'</small>' : '')+'</span>'+(current?'<span class="pill next">Now</span>':'')+'</li>';
     }).join("")+'</ul>';
   }
   return '<div class="card" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="row between"><span class="label">Today’s calendar</span>'+(configured && todayData.cal ? '<span class="pill num">'+todayData.cal.length+' event'+(todayData.cal.length===1?'':'s')+'</span>' : '')+'</div>'+body+'</div>';
+    '<div class="row between"><span class="label">Today’s calendar</span>'+(configured && todayData.cal ? '<span class="pill num">'+events.length+' event'+(events.length===1?'':'s')+'</span>' : '')+'</div>'+body+'</div>';
 }
 
 /* ---------- cloud sync (Supabase): to-dos, training, portfolio and settings follow your account ---------- */
@@ -1253,6 +1258,19 @@ async function doAuth(kind){
 const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 const ICON_X = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 const ICON_EDIT = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
+const ICON_CAL = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>';
+const ICON_CAL_OK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15.5l2 2 4-4"/></svg>';
+// Google Calendar "new event" link, pre-filled as an all-day event on the due date. The person presses Save in Google Calendar.
+function gcalUrl(x){
+  const d = x.due.replace(/-/g, ""), n = addDays(x.due, 1).replace(/-/g, "");
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(x.text) + "&dates=" + d + "/" + n +
+    "&details=" + encodeURIComponent((x.list==="work" ? "Work" : "Personal") + " to-do from MyEverythingApp");
+}
+function calBtn(x){
+  if(!x.due || x.done) return '<span class="cal-spacer" aria-hidden="true"></span>';
+  const added = x.calAdded === x.due + "|" + x.text;
+  return '<a class="iconbtn cal-btn'+(added?' added':'')+'" href="'+esc(gcalUrl(x))+'" target="_blank" rel="noopener" data-cal-id="'+x.id+'" title="'+(added?'Opened in Google Calendar. Tap to add it again':'Add to Google Calendar')+'" aria-label="'+(added?'Opened in Google Calendar: ':'Add to Google Calendar: ')+esc(x.text)+'">'+(added?ICON_CAL_OK:ICON_CAL)+'</a>';
+}
 const ICON_L = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
 const ICON_R = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
 const sportLabel = s => ({swim:"Swim",bike:"Bike",run:"Run",strength:"Strength",brick:"Ride + run",race:"Race",rest:"Rest"}[s]);
@@ -1455,7 +1473,7 @@ function renderTodo(){
       '<button class="btn small primary" type="submit">Save</button>'+
       '<button class="btn small ghost" type="button" data-action="cancel-edit">Cancel</button></form></li>';
     return '<li class="'+(x.done?'done':'')+'">'+checkBtn(x.done,"toggle-todo",'data-id="'+x.id+'"',(x.done?"Reopen ":"Complete ")+x.text)+
-    '<button type="button" class="t" data-action="edit-todo" data-id="'+x.id+'" title="Edit task">'+esc(x.text)+(x.sample?' <span class="pill sample">Example</span>':'')+'</button>'+dueTag(x.due)+
+    '<button type="button" class="t" data-action="edit-todo" data-id="'+x.id+'" title="Edit task">'+esc(x.text)+(x.sample?' <span class="pill sample">Example</span>':'')+'</button>'+dueTag(x.due)+calBtn(x)+
     '<button class="iconbtn" type="button" data-action="edit-todo" data-id="'+x.id+'" aria-label="Edit '+esc(x.text)+'">'+ICON_EDIT+'</button>'+
     '<button class="iconbtn" type="button" data-action="del-todo" data-id="'+x.id+'" aria-label="Delete '+esc(x.text)+'">'+ICON_X+'</button></li>';
   };
@@ -1567,6 +1585,14 @@ document.addEventListener("click", e => {
       if(!resetArmed){ resetArmed = true; el.textContent = "Tap again to erase all data"; setTimeout(()=>{ resetArmed=false; const b=document.getElementById("reset-btn"); if(b) b.textContent="Reset everything"; }, 4000); break; }
       resetArmed = false; state.training = {done:{}, gear:{}}; state.todos = []; state.pf.portfolios = {investment:[]}; save("training"); save("todos"); save("pf"); closeSettings(); render(); toast("All data erased"); break;
   }
+});
+
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-cal-id]"); if(!a) return;
+  const x = state.todos.find(t => t.id===a.dataset.calId); if(!x) return;
+  x.calAdded = x.due + "|" + x.text; save("todos");
+  setTimeout(() => { if(route()==="todo" && !state.ui.editTodo) render(); }, 400);
+  toast("Opening Google Calendar. Press Save there");
 });
 
 document.addEventListener("submit", e => {
