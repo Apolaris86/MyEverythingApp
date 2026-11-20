@@ -711,6 +711,8 @@ function normCandles(arr){
 async function pekGet(path){
   const r = await fetch(pekBase() + path, {headers:{accept:"application/json"}});
   if(!r.ok) throw new Error("ThePekFinance API answered " + r.status);
+  const type = r.headers.get("content-type") || "";
+  if(!/json/i.test(type)) throw new Error("ThePekFinance sent a web page instead of price data (" + new URL(r.url).pathname + ")");
   return r.json();
 }
 const chunk = (a, n) => { const o = []; for(let i=0;i<a.length;i+=n) o.push(a.slice(i,i+n)); return o; };
