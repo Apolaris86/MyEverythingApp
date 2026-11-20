@@ -417,8 +417,9 @@ if(state.settings.planVersion !== 2){
   store.set("settings", state.settings); store.set("training", state.training);
 }
 if(!state.training.gear) state.training.gear = {};
-// Default price source: the deployed ThePekFinance API (CORS allows this site).
-if(!state.settings.financeUrlSet){ state.settings.financeUrl = state.settings.financeUrl || "https://thepekfinance.vercel.app"; state.settings.financeUrlSet = true; store.set("settings", state.settings); }
+// Price source: MyEverythingApp's own relay (Cloudflare Worker), set in Settings. Drop the old automatic ThePekFinance default.
+if(state.settings.financeUrlSet && !state.settings.priceSourceV2){ if(state.settings.financeUrl === "https://thepekfinance.vercel.app") state.settings.financeUrl = ""; }
+if(!state.settings.priceSourceV2){ state.settings.priceSourceV2 = true; store.set("settings", state.settings); }
 if(!state.todos){ state.todos = sampleTodos(); store.set("todos", state.todos); }
 const save = k => store.set(k, state[k]);
 
@@ -710,9 +711,9 @@ function normCandles(arr){
 }
 async function pekGet(path){
   const r = await fetch(pekBase() + path, {headers:{accept:"application/json"}});
-  if(!r.ok) throw new Error("ThePekFinance API answered " + r.status);
+  if(!r.ok) throw new Error("Price source answered " + r.status);
   const type = r.headers.get("content-type") || "";
-  if(!/json/i.test(type)) throw new Error("ThePekFinance sent a web page instead of price data (" + new URL(r.url).pathname + ")");
+  if(!/json/i.test(type)) throw new Error("Price source sent a web page instead of price data (" + new URL(r.url).pathname + ")");
   return r.json();
 }
 const chunk = (a, n) => { const o = []; for(let i=0;i<a.length;i+=n) o.push(a.slice(i,i+n)); return o; };
@@ -723,7 +724,7 @@ async function refreshQuotes(){
   feed.busy = true; feed.last = Date.now();
   try{
     if(kind==="pek"){
-      for(const c of chunk(syms, 50)){
+      for(const c of chunk(syms, 40)){
         const res = await pekGet("/api/quotes?symbols=" + encodeURIComponent(c.join(",")));
         (Array.isArray(res) ? res : Object.values(res || {})).forEach(x => { const o = normQuote(x); if(o) applyQuote(o, "pek"); });
       }
@@ -752,7 +753,7 @@ async function ensureHist(range){
   feed.histBusy[range] = true;
   try{
     const data = {};
-    for(const c of chunk(allSymbols(), 60)){
+    for(const c of chunk(allSymbols(), 40)){
       const res = await pekGet("/api/histories?symbols=" + encodeURIComponent(c.join(",")) + "&range=" + range);
       Object.keys(res || {}).forEach(s => { data[s.toUpperCase()] = normCandles(res[s]); });
     }
@@ -818,7 +819,7 @@ function feedLine(){
   if(feed.status==="error") return '<span class="pk-dot err"></span>'+esc(feed.msg)+'. Showing last known prices · '+mkt;
   const live = feed.wsOpen && open;
   const when = feed.last ? new Date(Math.max(feed.last, ...Object.values(state.quotes).map(q=>q.ts||0))).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"}) : "";
-  const src = kind==="pek" ? "ThePekFinance" : "Finnhub";
+  const src = kind==="pek" ? (/thepekfinance/i.test(pekBase()) ? "ThePekFinance" : "Price relay") : "Finnhub";
   return '<span class="pk-dot '+(live||(open&&kind==="pek")?'live':'ok')+'"></span>'+(feed.status==="idle"?'Connecting to '+src+'…':(live?'Live':open?'Updating every '+(kind==="pek"?'15 s':'minute'):'Last prices')+' · '+src+(when?' · '+when:''))+(feed.wsOpen?' · real-time trades on':'')+' · '+mkt;
 }
 
@@ -878,7 +879,7 @@ function renderFinance(){
   const allocHTML = shown.map(([name,v]) => '<div class="pk-arow" title="'+esc(name)+': '+usd(v)+'"><span class="pk-aname">'+esc(name)+'</span><span class="pk-atrack"><span class="pk-afill" style="width:'+(v/maxA*78)+'%"></span><span class="pk-apct">'+(t.value ? (v/t.value*100).toFixed(1) : "0.0")+'%</span></span></div>').join("");
 
   const hist = state.hist[pf.range];
-  const chartNote = srcKind()!=="pek" ? 'Value over time needs ThePekFinance as the price source (Settings).'
+  const chartNote = srcKind()!=="pek" ? 'Value over time needs a price source address (Settings).'
     : (!hist || feed.histBusy[pf.range]) ? 'Loading price history…'
     : hist.err ? 'Couldn’t load price history: '+esc(hist.err)+'.' : '';
 
@@ -1215,7 +1216,7 @@ function openSettings(){
     '<label class="field"><span class="label">Race name</span><input type="text" id="set-race-name" value="'+esc(s.raceName)+'"></label>'+
     '<label class="field"><span class="label">Race date</span><input type="date" id="set-race-date" value="'+s.raceDate+'"><span class="muted" style="font-size:.8rem">The 26-week plan counts back from this date (Sunday of week 26).</span></label>'+
     '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:12px"><span class="label">PekFinance prices</span>'+
-    '<label class="field"><span class="label">ThePekFinance address</span><input type="url" id="set-finance-url" placeholder="https://your-app.vercel.app" value="'+esc(s.financeUrl||"")+'"><span class="muted" style="font-size:.8rem">Live quotes, price history and USD/AUD from your ThePekFinance /api. It must allow requests from this site (CORS).</span></label>'+
+    '<label class="field"><span class="label">Price source address</span><input type="url" id="set-finance-url" placeholder="https://your-app.vercel.app" value="'+esc(s.financeUrl||"")+'"><span class="muted" style="font-size:.8rem">Your MyEverythingApp price relay (Cloudflare Worker), or ThePekFinance. Must allow requests from this site.</span></label>'+
     '<label class="field"><span class="label">Finnhub API key (optional)</span><input type="password" id="set-finnhub" autocomplete="off" value="'+esc(s.finnhubKey||"")+'"><span class="muted" style="font-size:.8rem">Adds real-time US trades. Stored only in this browser.</span></label></div>'+
     '<button class="btn primary" type="submit">Save settings</button>'+
     '<div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">'+
