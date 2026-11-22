@@ -1075,7 +1075,7 @@ function newsCard(){
       : '<p class="muted" style="margin:0;font-size:.85rem">No headlines right now.</p>')+'</section>').join("")+'</div>'+
     (todayData.newsErr ? '<p class="muted" style="margin:0;font-size:.8rem">Showing earlier headlines: '+esc(todayData.newsErr)+'</p>' : '');
   return '<div class="card" style="display:flex;flex-direction:column;gap:14px">'+
-    '<div class="row between"><span class="label">Latest news</span>'+(d ? '<span class="muted" style="font-size:.8rem">Google News · updated '+newsAge(todayData.news.at)+' ago</span>' : '')+'</div>'+body+'</div>';
+    '<div class="row between"><span class="label">Latest news</span>'+(d ? '<span class="muted" style="font-size:.8rem">Updated '+newsAge(todayData.news.at)+' ago</span>' : '')+'</div>'+body+'</div>';
 }
 
 async function loadCal(force){
