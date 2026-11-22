@@ -1040,7 +1040,7 @@ function todayPortfolioCard(){
 }
 
 const NEWS_SECTIONS = [["world","World"],["au","Australia"],["hu","Hungary"],["finance","Finance"],["tech","Technology"]];
-const todayData = { news: store.get("newsCache", null), newsBusy:false, newsErr:"", cal:null, calDay:"", calAt:0, calBusy:false, calErr:"" };
+const todayData = { news: (n => n && n.data && NEWS_SECTIONS.some(([k]) => n.data[k] && n.data[k].length) ? n : null)(store.get("newsCache", null)), newsBusy:false, newsErr:"", cal:null, calDay:"", calAt:0, calBusy:false, calErr:"" };
 const relayBase = () => pekBase() && !/thepekfinance/i.test(pekBase()) ? pekBase() : "";
 async function relayGet(path){
   const r = await fetch(relayBase() + path, {headers:{accept:"application/json"}});
@@ -1058,6 +1058,7 @@ async function loadNews(){
   todayData.newsBusy = true; todayData.newsTried = Date.now();
   try{
     const data = await relayGet("/api/news?feeds=" + NEWS_SECTIONS.map(s => s[0]).join(",") + "&n=3");
+    if(NEWS_SECTIONS.every(([k]) => !(data[k] && data[k].length))) throw new Error("No headlines came back from the news sources. Retrying shortly");
     todayData.news = {at:Date.now(), data}; todayData.newsErr = ""; store.set("newsCache", todayData.news);
   }catch(e){ todayData.newsErr = /Failed to fetch|NetworkError|Load failed/i.test(e.message) ? "Couldn’t reach the news source" : e.message; }
   todayData.newsBusy = false; schedulePaint();

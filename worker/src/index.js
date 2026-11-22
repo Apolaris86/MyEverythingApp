@@ -151,12 +151,13 @@ async function fx() {
 }
 
 /* ---------- news: Google News RSS ---------- */
+// Each section tries Google News first, then a direct publisher feed (Google can refuse requests from Cloudflare).
 const FEEDS = {
-  world:   "https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-AU&gl=AU&ceid=AU:en",
-  au:      "https://news.google.com/rss?hl=en-AU&gl=AU&ceid=AU:en",
-  hu:      "https://news.google.com/rss?hl=hu&gl=HU&ceid=HU:hu",
-  finance: "https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-AU&gl=AU&ceid=AU:en",
-  tech:    "https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-AU&gl=AU&ceid=AU:en"
+  world:   ["https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-AU&gl=AU&ceid=AU:en", "https://feeds.bbci.co.uk/news/world/rss.xml|BBC News"],
+  au:      ["https://news.google.com/rss?hl=en-AU&gl=AU&ceid=AU:en", "https://www.abc.net.au/news/feed/45910/rss.xml|ABC News"],
+  hu:      ["https://news.google.com/rss?hl=hu&gl=HU&ceid=HU:hu", "https://telex.hu/rss|Telex"],
+  finance: ["https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-AU&gl=AU&ceid=AU:en", "https://feeds.bbci.co.uk/news/business/rss.xml|BBC Business"],
+  tech:    ["https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-AU&gl=AU&ceid=AU:en", "https://techcrunch.com/feed/|TechCrunch"]
 };
 const NEWS_TTL = 600;
 function decode(s) {
@@ -181,14 +182,28 @@ async function news(url) {
   const keys = (url.searchParams.get("feeds") || Object.keys(FEEDS).join(",")).split(",").filter(k => FEEDS[k]);
   if (!keys.length) bad("Unknown feed");
   const n = Math.min(10, Math.max(1, +url.searchParams.get("n") || 3));
+  const status = {};
   const res = await pool(keys, 5, async k => {
-    const r = await fetch(FEEDS[k], { headers: { "User-Agent": UA, "Accept": "application/rss+xml, application/xml" } });
-    if (!r.ok) throw new Error("feed " + r.status);
-    return parseRss(await r.text(), n);
+    const tried = [];
+    for (const entry of FEEDS[k]) {
+      const [feedUrl, name] = entry.split("|");
+      const host = new URL(feedUrl).hostname;
+      try {
+        const r = await fetch(feedUrl, { headers: { "User-Agent": UA, "Accept": "application/rss+xml, application/xml, text/xml" }, redirect: "follow" });
+        if (!r.ok) { tried.push(host + " " + r.status); continue; }
+        const items = parseRss(await r.text(), n).map(it => ({ ...it, source: it.source || name || host }));
+        if (items.length) { status[k] = host + (tried.length ? " (after " + tried.join(", ") + ")" : ""); return items; }
+        tried.push(host + " no items");
+      } catch (e) { tried.push(host + " " + (e.message || "failed")); }
+    }
+    status[k] = "failed: " + tried.join(", ");
+    return [];
   });
   const out = {};
   keys.forEach((k, i) => { out[k] = res[i] || []; });
-  out.__ttl = NEWS_TTL;
+  out._status = status;
+  // Cache a full answer for 10 minutes; a partial one only briefly so a hiccup doesn't stick.
+  out.__ttl = keys.every(k => out[k].length) ? NEWS_TTL : 60;
   return json(out, 200);
 }
 
