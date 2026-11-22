@@ -155,7 +155,8 @@ async function fx() {
 const FEEDS = {
   world:   ["https://news.google.com/rss/headlines/section/topic/WORLD?hl=en-AU&gl=AU&ceid=AU:en", "https://feeds.bbci.co.uk/news/world/rss.xml|BBC News"],
   au:      ["https://news.google.com/rss?hl=en-AU&gl=AU&ceid=AU:en", "https://www.abc.net.au/news/feed/45910/rss.xml|ABC News"],
-  hu:      ["https://news.google.com/rss?hl=hu&gl=HU&ceid=HU:hu", "https://telex.hu/rss|Telex"],
+  hu:      ["https://news.google.com/rss?hl=hu&gl=HU&ceid=HU:hu", "https://telex.hu/rss|Telex", "https://index.hu/24ora/rss/|Index",
+            "https://hvg.hu/rss|hvg", "https://24.hu/feed/|24.hu", "https://444.hu/feed|444", "https://www.portfolio.hu/rss/all.xml|Portfolio"],
   finance: ["https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=en-AU&gl=AU&ceid=AU:en", "https://feeds.bbci.co.uk/news/business/rss.xml|BBC Business"],
   tech:    ["https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-AU&gl=AU&ceid=AU:en", "https://techcrunch.com/feed/|TechCrunch"]
 };
