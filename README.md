@@ -17,7 +17,7 @@ Open http://localhost:8000.
 
 ## Hosting (stage 1)
 
-Static files only (`index.html`, `manifest.json`, `sw.js`, `icon.svg`). Works on GitHub Pages, Netlify or Cloudflare Pages. It installs as a PWA ("Add to Home Screen") when served over HTTPS.
+Static files only (`index.html`, `manifest.json`, `sw.js`, `icons/`). Works on GitHub Pages, Netlify or Cloudflare Pages. It installs as a PWA ("Add to Home Screen") when served over HTTPS.
 
 ## Mobile app (stage 2)
 
