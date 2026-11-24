@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MyEverythingApp</string>
+    <string name="title_activity_main">MyEverythingApp</string>
+    <string name="package_name">io.github.apolaris86.myeverythingapp</string>
+    <string name="custom_url_scheme">io.github.apolaris86.myeverythingapp</string>
+</resources>

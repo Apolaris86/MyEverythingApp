@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MyEverythingApp</title>
+<style>
+  :root{--bg:#F3F4F6;--ink:#121B28;--muted:#5B6575;--navy:#1F3B5C;--orange:#F26A1B}
+  @media (prefers-color-scheme: dark){:root{--bg:#0E1319;--ink:#E6EAF0;--muted:#97A1B1;--navy:#E6EAF0;--orange:#FF8A3D;color-scheme:dark}}
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:grid;place-items:center;
+       padding:env(safe-area-inset-top,0) max(24px,env(safe-area-inset-right,0)) env(safe-area-inset-bottom,0) max(24px,env(safe-area-inset-left,0));box-sizing:border-box}
+  main{max-width:340px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .word{font:italic 800 28px/1 "Arial Narrow","Roboto Condensed",sans-serif;color:var(--navy)}
+  .word span{color:var(--orange)}
+  p{margin:0;color:var(--muted)}
+  button{margin-top:6px;border:0;border-radius:10px;background:#1F3B5C;color:#fff;font:600 16px system-ui,sans-serif;padding:12px 22px}
+</style>
+</head>
+<body>
+<main>
+  <img src="icon.svg" width="72" height="72" alt="">
+  <div class="word">My<span>Everything</span>App</div>
+  <p>You’re offline, so MyEverythingApp can’t load right now. Your data is safe and will sync when you’re back online.</p>
+  <button type="button" onclick="location.href='https://apolaris86.github.io/MyEverythingApp/'">Try again</button>
+</main>
+</body>
+</html>

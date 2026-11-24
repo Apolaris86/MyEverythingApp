@@ -1,0 +1,23 @@
+{
+  "appId": "io.github.apolaris86.myeverythingapp",
+  "appName": "MyEverythingApp",
+  "webDir": "www",
+  "server": {
+    "url": "https://apolaris86.github.io/MyEverythingApp/",
+    "errorPath": "offline.html",
+    "allowNavigation": [
+      "apolaris86.github.io"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "backgroundColor": "#1F3B5C",
+      "showSpinner": false
+    },
+    "SystemBars": {
+      "insetsHandling": "native",
+      "initialViewportFitValueHint": "cover"
+    }
+  }
+}

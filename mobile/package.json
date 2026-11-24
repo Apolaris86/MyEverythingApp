@@ -1,0 +1,19 @@
+{
+  "name": "myeverythingapp-mobile",
+  "private": true,
+  "description": "MyEverythingApp for Android and iOS (Capacitor). Loads the live site; www/ holds the offline screen.",
+  "scripts": {
+    "sync": "cap sync",
+    "android": "cap open android",
+    "ios": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/core": "8.6.0",
+    "@capacitor/ios": "8.6.0",
+    "@capacitor/splash-screen": "8.0.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.0"
+  }
+}

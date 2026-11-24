@@ -19,9 +19,12 @@ Open http://localhost:8000.
 
 Static files only (`index.html`, `manifest.json`, `sw.js`, `icons/`). Works on GitHub Pages, Netlify or Cloudflare Pages. It installs as a PWA ("Add to Home Screen") when served over HTTPS.
 
-## Mobile app (stage 2)
+## Mobile app (`mobile/`)
 
-Wrap with Capacitor (`npx cap add ios` / `npx cap add android`) to ship to the App Store and Play Store.
+Capacitor 8 app for Android and iOS. It loads the live site (`https://apolaris86.github.io/MyEverythingApp/`), so app content updates with every push; `mobile/www/offline.html` shows when there's no connection.
+
+- **Android:** `.github/workflows/android.yml` builds an APK on every change under `mobile/` and publishes it to the **Android app (latest)** release. Release signing uses the `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD` secrets; without them it builds a debug-signed APK.
+- **iOS:** open `mobile/ios/App/App.xcodeproj` in Xcode on a Mac (`cd mobile && npm install && npx cap sync ios`), choose your team, and run on your iPhone.
 
 ## Data and sync
 

@@ -1,0 +1,78 @@
+name: Android app
+
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", ".github/workflows/android.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-app
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install
+        run: npm ci
+
+      - name: Copy web assets and plugins into the Android project
+        run: npx cap sync android
+
+      - name: Build APK
+        env:
+          APP_VERSION_CODE: ${{ github.run_number }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          cd android
+          chmod +x gradlew
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > app/release.keystore
+            ./gradlew --no-daemon assembleRelease
+            cp app/build/outputs/apk/release/app-release.apk ../MyEverythingApp.apk
+            echo "SIGNING=release key" >> "$GITHUB_ENV"
+          else
+            ./gradlew --no-daemon assembleDebug
+            cp app/build/outputs/apk/debug/app-debug.apk ../MyEverythingApp.apk
+            echo "SIGNING=temporary debug key (add the signing secrets to keep updates installable)" >> "$GITHUB_ENV"
+          fi
+          rm -f app/release.keystore
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MyEverythingApp-android
+          path: mobile/MyEverythingApp.apk
+
+      - name: Publish to the "Android app" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES="Build ${{ github.run_number }} from ${GITHUB_SHA::7}. Signed with: ${SIGNING}.
+          On your Android phone: open this page, tap MyEverythingApp.apk, then Install (allow installs from your browser if asked)."
+          if gh release view android-latest >/dev/null 2>&1; then
+            gh release upload android-latest MyEverythingApp.apk --clobber
+            gh release edit android-latest --notes "$NOTES"
+          else
+            gh release create android-latest MyEverythingApp.apk --title "Android app (latest)" --notes "$NOTES" --prerelease
+          fi
