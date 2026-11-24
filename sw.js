@@ -1,7 +1,7 @@
 // Offline cache for MyEverythingApp. Bump VERSION when you deploy changes.
 // Only handles this site's own files; API calls to other sites (prices) go straight to the network.
-const VERSION = "mea-v15";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg", "./vendor/supabase-js-2.119.0.js"];
+const VERSION = "mea-v16";
+const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg", "./icons/icon-192.png", "./icons/apple-touch-icon.png", "./vendor/supabase-js-2.119.0.js"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k)))));
