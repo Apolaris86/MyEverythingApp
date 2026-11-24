@@ -279,12 +279,26 @@ details.more summary::-webkit-details-marker{display:none}
 .cal-btn{color:var(--muted);text-decoration:none}
 .cal-btn.added{color:var(--good)}
 .cal-spacer{width:32px;flex:none}
+.todo-main{flex:1;min-width:0;display:flex;align-items:center;gap:12px}
+.todo-main .t{flex:1;min-width:0}
+.todo-meta{display:flex;align-items:center;gap:6px;flex:none}
+.todo-icons{display:flex;align-items:center;gap:2px}
+/* Phones: task text gets the full width; date and actions go on a line underneath */
+@media (max-width:640px){
+  .todo-list li{align-items:flex-start;padding:12px 2px}
+  .todo-list li > .check{margin-top:1px}
+  .todo-main{flex-direction:column;align-items:stretch;gap:2px}
+  .todo-main .t{font-size:1rem;line-height:1.4}
+  .todo-meta{justify-content:space-between;min-height:32px}
+  .todo-icons{margin-left:auto}
+  .todo-icons .cal-spacer{display:none}
+}
 .todo-list li.editing{background:var(--accent-soft);border-radius:8px;padding:10px}
 .edit-form{flex:1;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 150px 120px auto auto;gap:8px;align-items:center}
 @media (max-width:640px){.edit-form{grid-template-columns:1fr 1fr}.edit-form #edit-text{grid-column:1/-1}}
 .due{font-size:.78rem;color:var(--muted);white-space:nowrap}
 .due.overdue{color:var(--bad);font-weight:600}
-@media (max-width:560px){.todo-form{grid-template-columns:minmax(0,1fr) auto}.todo-form input[type=date]{grid-column:1}}
+@media (max-width:560px){.todo-form{grid-template-columns:minmax(0,1fr) auto}.todo-form input[type=text]{grid-column:1/-1}.todo-form input[type=date]{grid-column:1}}
 
 /* PekFinance: mirrors ThePekFinance (white canvas, blue accent, green/red P&L, pill controls) */
 :root{
@@ -1538,9 +1552,10 @@ function renderTodo(){
       '<button class="btn small primary" type="submit">Save</button>'+
       '<button class="btn small ghost" type="button" data-action="cancel-edit">Cancel</button></form></li>';
     return '<li class="'+(x.done?'done':'')+'">'+checkBtn(x.done,"toggle-todo",'data-id="'+x.id+'"',(x.done?"Reopen ":"Complete ")+x.text)+
-    '<button type="button" class="t" data-action="edit-todo" data-id="'+x.id+'" title="Edit task">'+esc(x.text)+(x.sample?' <span class="pill sample">Example</span>':'')+'</button>'+dueTag(x.due)+calBtn(x)+
+    '<div class="todo-main"><button type="button" class="t" data-action="edit-todo" data-id="'+x.id+'" title="Edit task">'+esc(x.text)+(x.sample?' <span class="pill sample">Example</span>':'')+'</button>'+
+    '<div class="todo-meta">'+dueTag(x.due)+'<span class="todo-icons">'+calBtn(x)+
     '<button class="iconbtn" type="button" data-action="edit-todo" data-id="'+x.id+'" aria-label="Edit '+esc(x.text)+'">'+ICON_EDIT+'</button>'+
-    '<button class="iconbtn" type="button" data-action="del-todo" data-id="'+x.id+'" aria-label="Delete '+esc(x.text)+'">'+ICON_X+'</button></li>';
+    '<button class="iconbtn" type="button" data-action="del-todo" data-id="'+x.id+'" aria-label="Delete '+esc(x.text)+'">'+ICON_X+'</button></span></div></div></li>';
   };
 
   view.innerHTML = '<div class="page">'+
